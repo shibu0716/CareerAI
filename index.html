@@ -1,0 +1,725 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CareerAI India – AI-Powered Career Assistant for ₹99/month</title>
+  <meta name="description" content="Build a winning resume, ace your interviews, and land your dream job with India's smartest AI career assistant. Start for just ₹99/month." />
+  <meta property="og:title" content="CareerAI India – Your AI Career Coach" />
+  <meta property="og:description" content="Resume Builder · Interview Prep · Cover Letters. Powered by AI. Just ₹99/month." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Baloo+2:wght@600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+
+  <!-- Firebase SDKs (compat v9) -->
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+
+  <!-- Toast animation -->
+  <style>
+    @keyframes slideInRight  { from{opacity:0;transform:translateX(60px)} to{opacity:1;transform:translateX(0)} }
+    @keyframes slideOutRight { from{opacity:1;transform:translateX(0)} to{opacity:0;transform:translateX(60px)} }
+    .will-animate { opacity:0; transform:translateY(24px); transition: opacity .6s ease, transform .6s ease; }
+    .animated     { opacity:1; transform:translateY(0); }
+    .resume-paper { font-family:Georgia,serif; font-size:.875rem; line-height:1.8; color:#dde;
+                    background:rgba(255,255,255,.03); border:1px solid rgba(255,255,255,.08);
+                    border-radius:8px; padding:24px; }
+    .upsell-banner{ background:rgba(255,107,53,.08); border:1px solid rgba(255,107,53,.25);
+                    border-radius:8px; padding:12px 16px; text-align:center; font-size:.8rem;
+                    color:#FF6B35; margin-top:12px; }
+    .score-fill   { height:100%; border-radius:4px; background:var(--grad);
+                    animation:fillBar .9s ease .3s both; }
+    @keyframes fillBar { from{width:0} }
+  </style>
+</head>
+<body>
+
+<!-- ══ NAVBAR ══════════════════════════════════════════════════ -->
+<nav class="navbar" id="navbar">
+  <div class="nav-inner">
+    <div class="logo">
+      <span class="logo-icon">🚀</span>
+      <span class="logo-text">CareerAI<span class="logo-accent">India</span></span>
+    </div>
+    <ul class="nav-links">
+      <li><a href="#features">Features</a></li>
+      <li><a href="#tools">Tools</a></li>
+      <li><a href="#pricing">Pricing</a></li>
+    </ul>
+    <div class="nav-actions">
+      <button id="lang-toggle" class="btn-ghost" onclick="toggleLanguage()" style="font-size:.8rem">🇮🇳 हिंदी</button>
+      <button class="btn-ghost" onclick="showSection('login')">Login</button>
+      <button class="btn-primary" onclick="showSection('signup')">Start Free Trial</button>
+    </div>
+  </div>
+</nav>
+
+<!-- ══ HERO ════════════════════════════════════════════════════ -->
+<section class="hero" id="home">
+  <div class="hero-bg">
+    <div class="orb orb1"></div>
+    <div class="orb orb2"></div>
+    <div class="orb orb3"></div>
+  </div>
+  <div class="hero-content">
+    <div class="hero-badge" id="hero-badge">🇮🇳 Made for India's 50 Crore Job Seekers</div>
+    <h1 class="hero-title" id="hero-title">
+      Land Your Dream Job<br/>
+      <span class="gradient-text">in 30 Days</span><br/>
+      with AI Power
+    </h1>
+    <p class="hero-sub" id="hero-sub">
+      AI Resume Builder · Interview Coach · Cover Letter Generator<br/>
+      <strong>Used by 10,000+ Indians</strong> from IITs to tier-3 colleges
+    </p>
+    <div class="hero-cta">
+      <button class="btn-hero" id="hero-btn" onclick="showSection('signup')">Start Free — ₹0 for 7 days</button>
+      <button class="btn-hero-ghost" id="hero-btn-ghost" onclick="showSection('tools')">See Live Demo ↓</button>
+    </div>
+    <div class="hero-stats">
+      <div class="stat"><span class="stat-num">10,000+</span><span class="stat-label">Resumes Built</span></div>
+      <div class="stat-divider"></div>
+      <div class="stat"><span class="stat-num">₹99</span><span class="stat-label">Per Month Only</span></div>
+      <div class="stat-divider"></div>
+      <div class="stat"><span class="stat-num">4.9★</span><span class="stat-label">User Rating</span></div>
+    </div>
+  </div>
+  <div class="hero-visual">
+    <div class="app-preview">
+      <div class="preview-header">
+        <div class="preview-dot red"></div>
+        <div class="preview-dot yellow"></div>
+        <div class="preview-dot green"></div>
+        <span style="color:#aaa;font-size:12px;margin-left:8px">CareerAI Resume Builder</span>
+      </div>
+      <div class="preview-body">
+        <div class="preview-resume">
+          <div class="resume-name">Rahul Sharma</div>
+          <div class="resume-title">Full Stack Developer | 2 yrs exp</div>
+          <div class="resume-line thick"></div>
+          <div class="resume-section-title">✦ Experience</div>
+          <div class="resume-line"></div>
+          <div class="resume-line short"></div>
+          <div class="resume-section-title">✦ Skills</div>
+          <div class="resume-chips">
+            <span class="chip">React</span>
+            <span class="chip">Node.js</span>
+            <span class="chip">Python</span>
+          </div>
+          <div class="ai-suggest">
+            <div class="ai-icon">🤖</div>
+            <div class="ai-text">AI Suggestion: Add "Reduced API latency by 40%" to boost ATS score by 23 points</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ TICKER ══════════════════════════════════════════════════ -->
+<section class="ticker-section">
+  <div class="ticker-track">
+    <div class="ticker-items">
+      <span>✅ Priya from Pune got hired at TCS</span>
+      <span>✅ Amit from Delhi cracked UPSC interview</span>
+      <span>✅ Sneha from Bangalore joined Infosys</span>
+      <span>✅ Rohit from Jaipur got ₹8LPA offer</span>
+      <span>✅ Kavya from Hyderabad cleared bank exam</span>
+      <span>✅ Arjun from Chennai landed IIT internship</span>
+      <span>✅ Meena from Lucknow got placed at Accenture</span>
+      <span>✅ Vikram from Dehradun cleared SSC CGL</span>
+      <span>✅ Priya from Pune got hired at TCS</span>
+      <span>✅ Amit from Delhi cracked UPSC interview</span>
+    </div>
+  </div>
+</section>
+
+<!-- ══ FEATURES ════════════════════════════════════════════════ -->
+<section class="features" id="features">
+  <div class="section-inner">
+    <div class="section-badge">Why CareerAI?</div>
+    <h2 class="section-title">Everything You Need to<br/><span class="gradient-text">Get Hired Fast</span></h2>
+    <div class="features-grid">
+      <div class="feature-card">
+        <div class="feature-icon">📄</div>
+        <h3>AI Resume Builder</h3>
+        <p>ATS-optimized resumes in 5 minutes. Powered by Google Gemini AI. Available in Hindi & English.</p>
+        <ul class="feature-list">
+          <li>ATS score checker (out of 100)</li>
+          <li>Quantified bullet points auto-generated</li>
+          <li>One-click copy + PDF export (Pro)</li>
+        </ul>
+      </div>
+      <div class="feature-card featured">
+        <div class="feature-badge-card">Most Popular</div>
+        <div class="feature-icon">🎯</div>
+        <h3>Interview AI Coach</h3>
+        <p>Practice with real questions from TCS, Infosys, Google, UPSC and more. Get instant AI feedback.</p>
+        <ul class="feature-list">
+          <li>Company-specific questions</li>
+          <li>STAR method feedback</li>
+          <li>Confidence score + model answer</li>
+        </ul>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">✉️</div>
+        <h3>Cover Letter Generator</h3>
+        <p>Personalized cover letters in seconds. Paste the job description, AI crafts a letter that stands out.</p>
+        <ul class="feature-list">
+          <li>Job description analysis</li>
+          <li>Tone customization</li>
+          <li>LinkedIn message templates</li>
+        </ul>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">💰</div>
+        <h3>Salary Negotiation AI</h3>
+        <p>Know your market value city-wise. Get AI-powered salary benchmarks and negotiation scripts.</p>
+        <ul class="feature-list">
+          <li>City-wise salary benchmarks</li>
+          <li>Negotiation scripts</li>
+          <li>Hot skills that boost pay</li>
+        </ul>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">🎓</div>
+        <h3>Exam Prep (SSC/Bank/UPSC)</h3>
+        <p>AI-generated MCQs for SSC, UPSC, Bank PO. Instant explanations and difficulty levels.</p>
+        <ul class="feature-list">
+          <li>Unlimited practice questions</li>
+          <li>Instant AI explanations</li>
+          <li>Multiple exam categories</li>
+        </ul>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">💼</div>
+        <h3>LinkedIn Optimizer</h3>
+        <p>Get 10x more recruiter views. AI rewrites your headline, summary and keywords.</p>
+        <ul class="feature-list">
+          <li>AI-optimized headline</li>
+          <li>Full About section rewrite</li>
+          <li>Keyword & profile tips</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ LIVE TOOLS ══════════════════════════════════════════════ -->
+<section class="tools-section" id="tools">
+  <div class="section-inner">
+    <div class="section-badge">Try It Free</div>
+    <h2 class="section-title">Live AI Tools — <span class="gradient-text">No Signup Needed</span></h2>
+    <p class="section-sub">Powered by Google Gemini AI. Experience the power right now.</p>
+
+    <div class="tools-tabs">
+      <button class="tool-tab active" onclick="switchTool('resume',this)">📄 Resume</button>
+      <button class="tool-tab" onclick="switchTool('interview',this)">🎯 Interview</button>
+      <button class="tool-tab" onclick="switchTool('cover',this)">✉️ Cover Letter</button>
+      <button class="tool-tab" onclick="switchTool('salary',this)">💰 Salary</button>
+      <button class="tool-tab" onclick="switchTool('linkedin',this)">💼 LinkedIn</button>
+      <button class="tool-tab" onclick="switchTool('exam',this)">🎓 Exam Prep</button>
+    </div>
+
+    <!-- ── RESUME ─────────────────────────────────────────── -->
+    <div class="tool-panel active" id="tool-resume">
+      <div class="tool-grid">
+        <div class="tool-inputs">
+          <h3 class="tool-heading">📄 AI Resume Builder</h3>
+          <div class="form-group"><label>Full Name</label><input type="text" id="res-name" placeholder="e.g. Rahul Sharma"/></div>
+          <div class="form-group"><label>Job Role You Want</label><input type="text" id="res-role" placeholder="e.g. Software Engineer, Marketing Manager"/></div>
+          <div class="form-group"><label>Your Experience</label><textarea id="res-exp" rows="3" placeholder="e.g. 2 years at Wipro as junior developer, worked on React, improved app speed by 30%"></textarea></div>
+          <div class="form-group"><label>Skills (comma separated)</label><input type="text" id="res-skills" placeholder="e.g. Python, Excel, Team Management"/></div>
+          <div class="form-group"><label>Education</label><input type="text" id="res-edu" placeholder="e.g. B.Tech CSE, Graphic Era University, 2022"/></div>
+          <button class="btn-generate" onclick="generateResume()"><span class="btn-icon">🤖</span> Generate AI Resume</button>
+        </div>
+        <div class="tool-output" id="resume-output">
+          <div class="output-placeholder">
+            <div class="placeholder-icon">📄</div>
+            <p>Your AI-generated resume will appear here</p>
+            <p class="placeholder-sub">Fill in your details and click Generate</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── INTERVIEW ──────────────────────────────────────── -->
+    <div class="tool-panel" id="tool-interview">
+      <div class="tool-grid">
+        <div class="tool-inputs">
+          <h3 class="tool-heading">🎯 Mock Interview Coach</h3>
+          <div class="form-group"><label>Target Company</label><input type="text" id="int-company" placeholder="e.g. TCS, Infosys, Google, SBI, UPSC"/></div>
+          <div class="form-group"><label>Interview Type</label>
+            <select id="int-type">
+              <option>HR Round</option>
+              <option>Technical Round</option>
+              <option>Managerial Round</option>
+              <option>Group Discussion</option>
+            </select>
+          </div>
+          <div class="form-group"><label>Your Answer (leave blank for a new question)</label><textarea id="int-answer" rows="5" placeholder="Type your answer here after seeing the question, then click again for feedback..."></textarea></div>
+          <button class="btn-generate" onclick="startInterview()"><span class="btn-icon">🎯</span> Ask Me a Question / Get Feedback</button>
+        </div>
+        <div class="tool-output" id="interview-output">
+          <div class="output-placeholder">
+            <div class="placeholder-icon">🎯</div>
+            <p>Interview question & feedback will appear here</p>
+            <p class="placeholder-sub">Click "Ask Me a Question" to start</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── COVER LETTER ───────────────────────────────────── -->
+    <div class="tool-panel" id="tool-cover">
+      <div class="tool-grid">
+        <div class="tool-inputs">
+          <h3 class="tool-heading">✉️ Cover Letter Generator</h3>
+          <div class="form-group"><label>Your Name & Role</label><input type="text" id="cov-name" placeholder="e.g. Priya Gupta, Marketing Executive"/></div>
+          <div class="form-group"><label>Company Name</label><input type="text" id="cov-company" placeholder="e.g. HDFC Bank, Zomato, Reliance"/></div>
+          <div class="form-group"><label>Job Description / Requirements</label><textarea id="cov-jd" rows="4" placeholder="Paste the job description or key requirements here..."></textarea></div>
+          <div class="form-group"><label>Your Key Achievement</label><input type="text" id="cov-achievement" placeholder="e.g. Grew Instagram from 500 to 50K followers in 6 months"/></div>
+          <button class="btn-generate" onclick="generateCoverLetter()"><span class="btn-icon">✉️</span> Generate Cover Letter</button>
+        </div>
+        <div class="tool-output" id="cover-output">
+          <div class="output-placeholder">
+            <div class="placeholder-icon">✉️</div>
+            <p>Your personalized cover letter will appear here</p>
+            <p class="placeholder-sub">Fill in details and click Generate</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── SALARY ─────────────────────────────────────────── -->
+    <div class="tool-panel" id="tool-salary">
+      <div class="tool-grid">
+        <div class="tool-inputs">
+          <h3 class="tool-heading">💰 Salary Checker</h3>
+          <div class="form-group"><label>Job Role</label><input type="text" id="sal-role" placeholder="e.g. Software Engineer, CA, Teacher, Bank PO"/></div>
+          <div class="form-group"><label>Experience Level</label>
+            <select id="sal-exp">
+              <option>Fresher (0-1 year)</option>
+              <option>Junior (1-3 years)</option>
+              <option>Mid-level (3-6 years)</option>
+              <option>Senior (6-10 years)</option>
+              <option>Lead/Manager (10+ years)</option>
+            </select>
+          </div>
+          <div class="form-group"><label>City</label>
+            <select id="sal-city">
+              <option>Bangalore</option>
+              <option>Mumbai</option>
+              <option>Delhi/NCR</option>
+              <option>Hyderabad</option>
+              <option>Pune</option>
+              <option>Chennai</option>
+              <option>Kolkata</option>
+              <option>Dehradun</option>
+              <option>Tier-2 City</option>
+            </select>
+          </div>
+          <button class="btn-generate" onclick="checkSalary()"><span class="btn-icon">💰</span> Check My Market Value</button>
+        </div>
+        <div class="tool-output" id="salary-output">
+          <div class="output-placeholder">
+            <div class="placeholder-icon">💰</div>
+            <p>Salary insights will appear here</p>
+            <p class="placeholder-sub">Enter your details and click Check</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── LINKEDIN ────────────────────────────────────────── -->
+    <div class="tool-panel" id="tool-linkedin">
+      <div class="tool-grid">
+        <div class="tool-inputs">
+          <h3 class="tool-heading">💼 LinkedIn Optimizer</h3>
+          <div class="form-group"><label>Your Name</label><input type="text" id="li-opt-name" placeholder="e.g. Rahul Sharma"/></div>
+          <div class="form-group"><label>Current / Target Role</label><input type="text" id="li-opt-role" placeholder="e.g. Software Engineer, Digital Marketer"/></div>
+          <div class="form-group"><label>Your Experience Summary</label><textarea id="li-opt-exp" rows="3" placeholder="e.g. 3 years in software development, built e-commerce apps, led team of 5"></textarea></div>
+          <div class="form-group"><label>Top Skills</label><input type="text" id="li-opt-skills" placeholder="e.g. React, Python, SEO, Data Analysis"/></div>
+          <button class="btn-generate" onclick="optimizeLinkedIn()"><span class="btn-icon">💼</span> Optimize My LinkedIn</button>
+        </div>
+        <div class="tool-output" id="linkedin-output">
+          <div class="output-placeholder">
+            <div class="placeholder-icon">💼</div>
+            <p>Your optimized LinkedIn profile will appear here</p>
+            <p class="placeholder-sub">Fill in details and click Optimize</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── EXAM PREP ───────────────────────────────────────── -->
+    <div class="tool-panel" id="tool-exam">
+      <div class="tool-grid">
+        <div class="tool-inputs">
+          <h3 class="tool-heading">🎓 Exam Prep (SSC/UPSC/Bank)</h3>
+          <div class="form-group"><label>Exam Type</label>
+            <select id="exam-type">
+              <option>SSC CGL</option>
+              <option>SSC CHSL</option>
+              <option>UPSC Prelims</option>
+              <option>Bank PO (IBPS)</option>
+              <option>SBI PO</option>
+              <option>RRB NTPC</option>
+              <option>General Knowledge</option>
+              <option>Current Affairs 2024-25</option>
+            </select>
+          </div>
+          <div class="form-group"><label>Topic (optional)</label><input type="text" id="exam-topic" placeholder="e.g. Indian History, Reasoning, English Grammar"/></div>
+          <div style="background:rgba(255,107,53,.08);border:1px solid rgba(255,107,53,.2);border-radius:8px;padding:14px;font-size:.85rem;color:#dde;line-height:1.7;margin-bottom:12px">
+            ℹ️ Click "Get Question" → A question appears on the right → Click the option you think is correct → AI reveals the answer & explanation instantly.
+          </div>
+          <button class="btn-generate" onclick="getExamQuestion()"><span class="btn-icon">📚</span> Get Question</button>
+        </div>
+        <div class="tool-output" id="exam-output">
+          <div class="output-placeholder">
+            <div class="placeholder-icon">🎓</div>
+            <p>Your exam question will appear here</p>
+            <p class="placeholder-sub">Select exam type and click Get Question</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /section-inner -->
+</section>
+
+<!-- ══ TESTIMONIALS ════════════════════════════════════════════ -->
+<section class="testimonials">
+  <div class="section-inner">
+    <div class="section-badge">Success Stories</div>
+    <h2 class="section-title">Real People, <span class="gradient-text">Real Results</span></h2>
+    <div class="testimonials-grid">
+      <div class="testi-card">
+        <div class="testi-stars">★★★★★</div>
+        <p class="testi-text">"Rejected 15 times with my old resume. After CareerAI rebuilt it, I got 3 calls in one week. Got placed at Wipro with ₹4.5 LPA!"</p>
+        <div class="testi-author">
+          <div class="testi-avatar">RS</div>
+          <div><div class="testi-name">Rahul S.</div><div class="testi-role">B.Tech, Dehradun → Wipro</div></div>
+        </div>
+      </div>
+      <div class="testi-card featured-testi">
+        <div class="testi-stars">★★★★★</div>
+        <p class="testi-text">"The interview coach is incredible! Asked real TCS questions, told me exactly what I was doing wrong. Cleared TCS in first attempt!"</p>
+        <div class="testi-author">
+          <div class="testi-avatar">PG</div>
+          <div><div class="testi-name">Priya G.</div><div class="testi-role">MCA Graduate → TCS</div></div>
+        </div>
+      </div>
+      <div class="testi-card">
+        <div class="testi-stars">★★★★★</div>
+        <p class="testi-text">"₹99/month for this is insane value! Used it for UPSC interview prep. The exam prep + mock interview features are top class."</p>
+        <div class="testi-author">
+          <div class="testi-avatar">AK</div>
+          <div><div class="testi-name">Amit K.</div><div class="testi-role">UPSC Aspirant, Delhi</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ PRICING ════════════════════════════════════════════════ -->
+<section class="pricing" id="pricing">
+  <div class="section-inner">
+    <div class="section-badge">Simple Pricing</div>
+    <h2 class="section-title">Less than a <span class="gradient-text">Cup of Chai ☕</span></h2>
+    <p class="section-sub">Just ₹99/month — cancel anytime. No hidden charges.</p>
+    <div class="pricing-grid">
+      <div class="price-card">
+        <div class="price-name">Free</div>
+        <div class="price-amount">₹0</div>
+        <div class="price-period">7-day trial</div>
+        <ul class="price-features">
+          <li>✅ 3 AI Generations (any tool)</li>
+          <li>✅ Resume + Interview + Cover Letter</li>
+          <li>✅ Basic Salary Check</li>
+          <li>❌ Unlimited Access</li>
+          <li>❌ PDF Export</li>
+          <li>❌ Save to Dashboard</li>
+          <li>❌ Priority WhatsApp Support</li>
+        </ul>
+        <button class="btn-price-outline" onclick="showSection('signup')">Start Free Trial</button>
+      </div>
+      <div class="price-card featured-price">
+        <div class="price-popular">⚡ Most Popular</div>
+        <div class="price-name">Pro</div>
+        <div class="price-amount">₹99</div>
+        <div class="price-period">per month</div>
+        <ul class="price-features">
+          <li>✅ Unlimited AI Resumes</li>
+          <li>✅ Unlimited Interview Prep</li>
+          <li>✅ Unlimited Cover Letters</li>
+          <li>✅ Salary Negotiation Scripts</li>
+          <li>✅ LinkedIn Optimizer</li>
+          <li>✅ Exam Prep (SSC/Bank/UPSC)</li>
+          <li>✅ Save Resumes to Dashboard</li>
+          <li>✅ WhatsApp Support</li>
+        </ul>
+        <button class="btn-price-primary" onclick="selectPlan('monthly')">Get Pro Now →</button>
+        <div class="price-guarantee">🔒 30-day money back guarantee</div>
+      </div>
+      <div class="price-card">
+        <div class="price-name">Annual</div>
+        <div class="price-amount">₹799</div>
+        <div class="price-period">per year (save ₹389)</div>
+        <ul class="price-features">
+          <li>✅ Everything in Pro</li>
+          <li>✅ 1-on-1 Resume Review</li>
+          <li>✅ Mock Interview Call</li>
+          <li>✅ Early Access to Features</li>
+          <li>✅ Priority WhatsApp Support</li>
+          <li>✅ Job Referral Network</li>
+          <li>✅ Career Roadmap Session</li>
+        </ul>
+        <button class="btn-price-outline" onclick="selectPlan('annual')">Get Annual Deal</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ FAQ ════════════════════════════════════════════════════ -->
+<section class="faq">
+  <div class="section-inner">
+    <h2 class="section-title">Frequently Asked <span class="gradient-text">Questions</span></h2>
+    <div class="faq-list">
+      <div class="faq-item" onclick="toggleFaq(this)">
+        <div class="faq-q">Is CareerAI available in Hindi? <span class="faq-arrow">▼</span></div>
+        <div class="faq-a">Yes! Use the हिंदी button in the top navbar to switch. You can also write your details in Hindi and our AI will craft professional content for you.</div>
+      </div>
+      <div class="faq-item" onclick="toggleFaq(this)">
+        <div class="faq-q">Will my resume pass ATS systems? <span class="faq-arrow">▼</span></div>
+        <div class="faq-a">Yes! Our AI is powered by Google Gemini and trained specifically for Indian ATS systems like Naukri and LinkedIn. We show you an ATS score out of 100.</div>
+      </div>
+      <div class="faq-item" onclick="toggleFaq(this)">
+        <div class="faq-q">How do I pay? Do you accept UPI? <span class="faq-arrow">▼</span></div>
+        <div class="faq-a">Yes! We accept all UPI apps — GPay, PhonePe, Paytm, BHIM, and any UPI-enabled bank app. Simply scan our QR code or copy our UPI ID to pay directly.</div>
+      </div>
+      <div class="faq-item" onclick="toggleFaq(this)">
+        <div class="faq-q">Is it useful for SSC/UPSC/Bank PO aspirants? <span class="faq-arrow">▼</span></div>
+        <div class="faq-a">100%! We have a dedicated Exam Prep section with unlimited MCQs for SSC CGL, UPSC, Bank PO, IBPS and more — with instant AI explanations.</div>
+      </div>
+      <div class="faq-item" onclick="toggleFaq(this)">
+        <div class="faq-q">Can I cancel anytime? <span class="faq-arrow">▼</span></div>
+        <div class="faq-a">Yes, cancel anytime with zero hassle. 30-day money back guarantee — if you're not happy, we'll refund you completely. No questions asked.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ CTA ════════════════════════════════════════════════════ -->
+<section class="cta-section">
+  <div class="cta-inner">
+    <div class="cta-orbs">
+      <div class="cta-orb cta-orb1"></div>
+      <div class="cta-orb cta-orb2"></div>
+    </div>
+    <h2 class="cta-title">Your Dream Job is One Click Away</h2>
+    <p class="cta-sub">Join 10,000+ Indians who changed their careers with CareerAI</p>
+    <button class="btn-cta" onclick="showSection('signup')">Start Free — No Credit Card Needed →</button>
+    <div class="cta-trust">🔒 Secure · Cancel Anytime · Made in India 🇮🇳 · Built with ❤️ in Dehradun</div>
+  </div>
+</section>
+
+<!-- ══ FOOTER ══════════════════════════════════════════════════ -->
+<footer class="footer">
+  <div class="footer-inner">
+    <div class="footer-brand">
+      <div class="logo">
+        <span class="logo-icon">🚀</span>
+        <span class="logo-text">CareerAI<span class="logo-accent">India</span></span>
+      </div>
+      <p class="footer-tagline">Empowering India's workforce with AI.<br/>Built with ❤️ in Dehradun, Uttarakhand.</p>
+      <div class="footer-social">
+        <a href="#" class="social-link">Instagram</a>
+        <a href="#" class="social-link">LinkedIn</a>
+        <a href="#" class="social-link">Twitter/X</a>
+        <a href="#" class="social-link">WhatsApp</a>
+      </div>
+    </div>
+    <div class="footer-links">
+      <div class="footer-col">
+        <h4>Tools</h4>
+        <a href="#tools">AI Resume Builder</a>
+        <a href="#tools">Interview Coach</a>
+        <a href="#tools">Cover Letter Gen</a>
+        <a href="#tools">Salary Checker</a>
+        <a href="#tools">LinkedIn Optimizer</a>
+        <a href="#tools">Exam Prep</a>
+      </div>
+      <div class="footer-col">
+        <h4>Company</h4>
+        <a href="#">About Us</a>
+        <a href="#">Blog</a>
+        <a href="#">Contact Us</a>
+        <a href="#">WhatsApp Support</a>
+      </div>
+      <div class="footer-col">
+        <h4>Legal</h4>
+        <a href="#">Privacy Policy</a>
+        <a href="#">Terms of Service</a>
+        <a href="#">Refund Policy</a>
+      </div>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <p>© 2026 CareerAI India. All rights reserved.</p>
+    <p>Contact: support@careerai.in | WhatsApp: +91 98765 43210</p>
+  </div>
+</footer>
+
+<!-- ══ MODALS ══════════════════════════════════════════════════ -->
+<div class="modal-overlay" id="modal-overlay" onclick="closeModal()">
+  <div class="modal" id="modal" onclick="event.stopPropagation()">
+
+    <!-- LOGIN -->
+    <div class="modal-section" id="modal-login">
+      <button class="modal-close" onclick="closeModal()">✕</button>
+      <h2 class="modal-title">Welcome Back 👋</h2>
+      <p class="modal-sub">Login to access your career tools</p>
+      <button class="btn-google" onclick="handleGoogleAuth()">
+        <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" width="18" style="vertical-align:middle;margin-right:8px"/>
+        Continue with Google
+      </button>
+      <div class="divider"><span>or</span></div>
+      <div class="form-group"><label>Email</label><input type="email" id="li-email" placeholder="rahul@email.com"/></div>
+      <div class="form-group"><label>Password</label><input type="password" id="li-pass" placeholder="Your password"/></div>
+      <button class="btn-modal-primary" id="btn-login" onclick="handleLogin()">Login →</button>
+      <p class="modal-switch">No account? <a href="#" onclick="showSection('signup')">Sign up free</a></p>
+    </div>
+
+    <!-- SIGNUP -->
+    <div class="modal-section" id="modal-signup" style="display:none">
+      <button class="modal-close" onclick="closeModal()">✕</button>
+      <h2 class="modal-title">Start Free Trial 🚀</h2>
+      <p class="modal-sub">7 days free · No credit card · Cancel anytime</p>
+      <button class="btn-google" onclick="handleGoogleAuth()">
+        <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" width="18" style="vertical-align:middle;margin-right:8px"/>
+        Continue with Google
+      </button>
+      <div class="divider"><span>or</span></div>
+      <div class="form-group"><label>Full Name</label><input type="text" id="su-name" placeholder="Rahul Sharma"/></div>
+      <div class="form-group"><label>Email</label><input type="email" id="su-email" placeholder="rahul@email.com"/></div>
+      <div class="form-group"><label>Password</label><input type="password" id="su-pass" placeholder="Min 6 characters"/></div>
+      <div class="form-group"><label>Referral Code (optional)</label><input type="text" id="su-referral" placeholder="e.g. CAI-ABC123"/></div>
+      <button class="btn-modal-primary" id="btn-signup" onclick="handleSignup()">Start Free Trial →</button>
+      <p class="modal-switch">Already have an account? <a href="#" onclick="showSection('login')">Login</a></p>
+    </div>
+
+    <!-- PAYMENT -->
+    <div class="modal-section" id="modal-payment" style="display:none">
+      <button class="modal-close" onclick="closeModal()">✕</button>
+      <h2 class="modal-title">Complete Payment ⚡</h2>
+      <p class="modal-sub">Pay directly via UPI — instant &amp; secure</p>
+
+      <!-- Plan summary -->
+      <div class="payment-summary">
+        <div class="pay-item">
+          <span id="pay-plan-label">CareerAI Pro Monthly</span>
+          <span><strong id="pay-total-amount">₹99</strong></span>
+        </div>
+      </div>
+
+      <!-- QR Code -->
+      <div class="upi-qr-wrap">
+        <div class="upi-qr-box">
+          <img id="upi-qr-img" src="" alt="UPI QR Code" class="upi-qr-img" />
+          <div class="upi-qr-shine"></div>
+        </div>
+        <div class="upi-scan-hint">📱 Scan with any UPI app</div>
+        <div class="upi-apps-row">
+          <span class="upi-app-badge">GPay</span>
+          <span class="upi-app-badge">PhonePe</span>
+          <span class="upi-app-badge">Paytm</span>
+          <span class="upi-app-badge">BHIM</span>
+        </div>
+      </div>
+
+      <!-- Divider -->
+      <div class="upi-or"><span>or pay using UPI ID</span></div>
+
+      <!-- UPI ID copy row -->
+      <div class="upi-id-row">
+        <div class="upi-id-box">
+          <span class="upi-id-icon">💳</span>
+          <span id="upi-id-display" class="upi-id-val">shibuthegenius@ybl</span>
+        </div>
+        <button id="btn-copy-upi" class="btn-copy-upi" onclick="copyUpiId()">📋 Copy</button>
+      </div>
+      <div class="upi-amount-tag">Pay exactly: <strong id="upi-amount-display">₹99</strong></div>
+
+      <!-- Steps -->
+      <div class="upi-steps">
+        <div class="upi-step"><span class="upi-step-num">1</span>Scan QR <em>or</em> copy UPI ID above</div>
+        <div class="upi-step"><span class="upi-step-num">2</span>Open GPay / PhonePe / Paytm</div>
+        <div class="upi-step"><span class="upi-step-num">3</span>Pay the exact amount shown</div>
+        <div class="upi-step"><span class="upi-step-num">4</span>Copy your UTR &amp; enter below ↓</div>
+      </div>
+
+      <!-- UTR Input -->
+      <div class="form-group" style="margin-top:16px">
+        <label>UTR / Transaction ID <span style="color:var(--text-muted);font-weight:400">(from your payment app)</span></label>
+        <input type="text" id="upi-txn-id" placeholder="e.g. 123456789012" maxlength="22" autocomplete="off" />
+      </div>
+
+      <button id="btn-verify-upi" class="btn-modal-primary" onclick="verifyUpiPayment()" style="margin-top:8px">✅ Verify &amp; Activate →</button>
+      <div class="pay-trust">🔒 Direct UPI · 100% Secure · GPay · PhonePe · Paytm · No middleman 🇮🇳</div>
+    </div>
+
+    <!-- PENDING VERIFICATION -->
+    <div class="modal-section" id="modal-pending" style="display:none">
+      <div class="pending-icon">📲</div>
+      <h2 class="modal-title">Payment Submitted!</h2>
+      <p class="modal-sub">Your UTR has been saved. WhatsApp is opening now — just send the message!</p>
+
+      <div class="pending-steps">
+        <div class="pending-step done">✅ UTR / Transaction ID saved</div>
+        <div class="pending-step done">✅ WhatsApp message prepared</div>
+        <div class="pending-step active">⏳ Waiting for owner to verify &amp; activate</div>
+      </div>
+
+      <div class="pending-info">
+        <div class="pending-info-icon">ℹ️</div>
+        <div>
+          <strong>What happens next?</strong><br/>
+          We'll verify your payment on WhatsApp and activate your Pro account within <strong>30 minutes</strong> (usually instant during daytime 9am–10pm IST).
+        </div>
+      </div>
+
+      <button class="btn-modal-primary" onclick="reopenWhatsApp()" style="margin-top:20px">
+        📱 Reopen WhatsApp if it didn't open
+      </button>
+      <button class="btn-ghost" onclick="closeModal()" style="width:100%;margin-top:10px;border-radius:10px;padding:12px">
+        Close — I'll wait for activation
+      </button>
+    </div>
+
+    <!-- SUCCESS -->
+    <div class="modal-section" id="modal-success" style="display:none">
+      <div class="success-icon">🎉</div>
+      <h2 class="modal-title">You're All Set!</h2>
+      <p class="modal-sub">Welcome to CareerAI! Your account is ready.</p>
+      <div class="success-steps">
+        <div class="success-step">✅ Account Created</div>
+        <div class="success-step">✅ Pro Access Activated</div>
+        <div class="success-step">📱 Check WhatsApp for welcome message</div>
+      </div>
+      <button class="btn-modal-primary" onclick="closeModal()">Start Building Your Career →</button>
+    </div>
+
+
+  </div>
+</div>
+
+<!-- ══ SCRIPTS (order matters) ════════════════════════════════ -->
+<script src="config.js"></script>
+<script src="firebase-service.js"></script>
+<script src="gemini-service.js"></script>
+<script src="upi-service.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
