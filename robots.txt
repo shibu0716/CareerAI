@@ -1,0 +1,8 @@
+User-agent: *
+Allow: /
+
+# Block private pages from indexing
+Disallow: /dashboard.html
+
+# Sitemap location
+Sitemap: https://careerai.in/sitemap.xml

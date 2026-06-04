@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>My Dashboard — CareerAI India</title>
+  <meta name="robots" content="noindex" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+
+  <!-- Firebase SDKs -->
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+
+  <style>
+    .dash-wrap        { max-width:1100px; margin:0 auto; padding:32px 24px; }
+    .dash-header      { display:flex; justify-content:space-between; align-items:center; margin-bottom:32px; flex-wrap:wrap; gap:12px; }
+    .dash-greeting    { font-size:1.6rem; font-weight:800; color:#fff; }
+    .dash-greeting span{ color:#FF6B35; }
+    .plan-badge       { padding:6px 16px; border-radius:100px; font-size:.8rem; font-weight:700; }
+    .plan-badge.free  { background:rgba(255,255,255,.08); color:#aaa; border:1px solid rgba(255,255,255,.15); }
+    .plan-badge.pro   { background:linear-gradient(135deg,#FF6B35,#ff9a3c); color:#fff; }
+    .dash-grid        { display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:20px; margin-bottom:32px; }
+    .dash-stat-card   { background:var(--card); border:1px solid var(--border); border-radius:16px; padding:24px; }
+    .stat-card-title  { font-size:.75rem; color:var(--text-muted); text-transform:uppercase; letter-spacing:1px; margin-bottom:8px; }
+    .stat-card-value  { font-size:2rem; font-weight:900; color:#fff; }
+    .stat-card-sub    { font-size:.8rem; color:var(--text-muted); margin-top:4px; }
+    .upgrade-card     { background:linear-gradient(135deg,rgba(255,107,53,.12),rgba(255,154,60,.08)); border:1px solid rgba(255,107,53,.3); border-radius:16px; padding:28px; margin-bottom:32px; }
+    .upgrade-card h3  { font-size:1.2rem; font-weight:800; margin-bottom:8px; }
+    .upgrade-card p   { color:var(--text-muted); font-size:.9rem; margin-bottom:16px; }
+    .upgrade-perks    { display:flex; gap:8px; flex-wrap:wrap; margin-bottom:20px; }
+    .perk-chip        { background:rgba(255,255,255,.06); border:1px solid rgba(255,255,255,.1); border-radius:6px; padding:4px 12px; font-size:.8rem; color:#dde; }
+    .section-title    { font-size:1.1rem; font-weight:700; color:#fff; margin-bottom:16px; }
+    .resume-list      { display:grid; gap:12px; }
+    .resume-item      { background:var(--card); border:1px solid var(--border); border-radius:12px; padding:16px 20px; display:flex; justify-content:space-between; align-items:center; }
+    .resume-item-info .res-name { font-weight:700; color:#fff; }
+    .resume-item-info .res-role { font-size:.8rem; color:var(--text-muted); margin-top:2px; }
+    .resume-item-info .res-ats  { font-size:.75rem; color:#FF6B35; margin-top:4px; font-weight:600; }
+    .resume-actions   { display:flex; gap:8px; }
+    .res-btn          { background:rgba(255,255,255,.05); border:1px solid rgba(255,255,255,.1); border-radius:8px; padding:6px 14px; font-size:.8rem; color:#dde; cursor:pointer; transition:all .2s; font-family:var(--font); }
+    .res-btn:hover    { background:rgba(255,107,53,.15); border-color:rgba(255,107,53,.3); color:#FF6B35; }
+    .empty-state      { text-align:center; padding:48px 24px; color:var(--text-muted); }
+    .empty-icon       { font-size:3rem; margin-bottom:12px; }
+    .tools-quick      { display:grid; grid-template-columns:repeat(auto-fit,minmax(150px,1fr)); gap:12px; margin-bottom:32px; }
+    .quick-tool       { background:var(--card); border:1px solid var(--border); border-radius:12px; padding:16px; text-align:center; cursor:pointer; transition:all .2s; text-decoration:none; }
+    .quick-tool:hover { border-color:rgba(255,107,53,.4); transform:translateY(-2px); }
+    .qt-icon          { font-size:1.8rem; margin-bottom:6px; }
+    .qt-label         { font-size:.8rem; color:var(--text-muted); }
+    .referral-card    { background:var(--card); border:1px solid var(--border); border-radius:16px; padding:24px; margin-bottom:32px; }
+    .ref-card-title   { font-weight:700; color:#fff; margin-bottom:4px; }
+    .ref-card-sub     { font-size:.85rem; color:var(--text-muted); margin-bottom:16px; }
+    .ref-code-big     { background:rgba(255,107,53,.08); border:1px solid rgba(255,107,53,.25); border-radius:10px; padding:14px 20px; font-size:1.3rem; font-weight:900; letter-spacing:4px; color:#FF6B35; display:inline-block; margin-right:12px; }
+    .dash-nav         { display:flex; justify-content:space-between; align-items:center; padding:16px 24px; background:var(--nav-bg); border-bottom:1px solid var(--border); margin-bottom:0; }
+    .dash-logo        { display:flex; align-items:center; gap:10px; text-decoration:none; }
+    .dash-logo-text   { font-size:1.2rem; font-weight:800; color:#fff; }
+    .dash-logo-accent { color:#FF6B35; }
+    .dash-nav-actions { display:flex; gap:12px; align-items:center; }
+    .dash-user-name   { font-size:.9rem; color:var(--text-muted); }
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav class="dash-nav">
+  <a href="index.html" class="dash-logo">
+    <span style="font-size:1.4rem">🚀</span>
+    <span class="dash-logo-text">CareerAI<span class="dash-logo-accent">India</span></span>
+  </a>
+  <div class="dash-nav-actions">
+    <span class="dash-user-name" id="dash-user-name">Loading...</span>
+    <a href="index.html" class="btn-ghost" style="text-decoration:none;padding:8px 16px">← Back to App</a>
+    <button class="btn-ghost" onclick="signOut()">Logout</button>
+  </div>
+</nav>
+
+<div class="dash-wrap">
+
+  <!-- HEADER -->
+  <div class="dash-header">
+    <div>
+      <div class="dash-greeting" id="dash-greeting">👋 Welcome back, <span id="dash-name">...</span></div>
+      <div style="color:var(--text-muted);font-size:.9rem;margin-top:4px" id="dash-plan-text">Loading your plan...</div>
+    </div>
+    <div>
+      <span class="plan-badge free" id="plan-badge">Free Plan</span>
+    </div>
+  </div>
+
+  <!-- UPGRADE BANNER (shown only for free users) -->
+  <div class="upgrade-card" id="upgrade-card" style="display:none">
+    <h3>⚡ Upgrade to Pro — Unlock Everything</h3>
+    <p>You're on the Free plan. Get unlimited access to all 6 AI tools for less than a cup of chai.</p>
+    <div class="upgrade-perks">
+      <span class="perk-chip">✅ Unlimited Resumes</span>
+      <span class="perk-chip">✅ Interview Coach</span>
+      <span class="perk-chip">✅ Cover Letters</span>
+      <span class="perk-chip">✅ Salary Insights</span>
+      <span class="perk-chip">✅ LinkedIn Optimizer</span>
+      <span class="perk-chip">✅ Exam Prep MCQs</span>
+      <span class="perk-chip">✅ Save Resumes</span>
+      <span class="perk-chip">✅ WhatsApp Support</span>
+    </div>
+    <button class="btn-primary" onclick="window.location='index.html#pricing'" style="padding:12px 28px;font-size:1rem">Get Pro for ₹99/month →</button>
+    <div style="font-size:.8rem;color:var(--text-muted);margin-top:10px">🔒 30-day money back guarantee · Cancel anytime</div>
+  </div>
+
+  <!-- STATS -->
+  <div class="dash-grid">
+    <div class="dash-stat-card">
+      <div class="stat-card-title">AI Generations Used</div>
+      <div class="stat-card-value" id="stat-uses">—</div>
+      <div class="stat-card-sub" id="stat-uses-sub">Loading...</div>
+    </div>
+    <div class="dash-stat-card">
+      <div class="stat-card-title">Resumes Saved</div>
+      <div class="stat-card-value" id="stat-resumes">—</div>
+      <div class="stat-card-sub">Stored in your account</div>
+    </div>
+    <div class="dash-stat-card">
+      <div class="stat-card-title">Plan Status</div>
+      <div class="stat-card-value" id="stat-plan">—</div>
+      <div class="stat-card-sub" id="stat-expiry">—</div>
+    </div>
+    <div class="dash-stat-card">
+      <div class="stat-card-title">Referrals Made</div>
+      <div class="stat-card-value" id="stat-refs">0</div>
+      <div class="stat-card-sub">Each referral = 1 free month for you</div>
+    </div>
+  </div>
+
+  <!-- QUICK TOOLS -->
+  <div class="section-title">🚀 Quick Launch</div>
+  <div class="tools-quick">
+    <a href="index.html#tools" class="quick-tool" onclick="sessionStorage.setItem('open-tool','resume')">
+      <div class="qt-icon">📄</div>
+      <div class="qt-label">Resume Builder</div>
+    </a>
+    <a href="index.html#tools" class="quick-tool" onclick="sessionStorage.setItem('open-tool','interview')">
+      <div class="qt-icon">🎯</div>
+      <div class="qt-label">Interview Coach</div>
+    </a>
+    <a href="index.html#tools" class="quick-tool" onclick="sessionStorage.setItem('open-tool','cover')">
+      <div class="qt-icon">✉️</div>
+      <div class="qt-label">Cover Letter</div>
+    </a>
+    <a href="index.html#tools" class="quick-tool" onclick="sessionStorage.setItem('open-tool','salary')">
+      <div class="qt-icon">💰</div>
+      <div class="qt-label">Salary Checker</div>
+    </a>
+    <a href="index.html#tools" class="quick-tool" onclick="sessionStorage.setItem('open-tool','linkedin')">
+      <div class="qt-icon">💼</div>
+      <div class="qt-label">LinkedIn Optimizer</div>
+    </a>
+    <a href="index.html#tools" class="quick-tool" onclick="sessionStorage.setItem('open-tool','exam')">
+      <div class="qt-icon">🎓</div>
+      <div class="qt-label">Exam Prep</div>
+    </a>
+  </div>
+
+  <!-- REFERRAL CARD -->
+  <div class="referral-card">
+    <div class="ref-card-title">🎁 Refer a Friend — Earn 1 Free Month</div>
+    <div class="ref-card-sub">Share your unique code. When they subscribe, you both get 1 month FREE added to your account.</div>
+    <div style="display:flex;align-items:center;flex-wrap:wrap;gap:12px">
+      <span class="ref-code-big" id="ref-code-big">CAI-????</span>
+      <button class="btn-primary" onclick="copyRefCode()" style="padding:10px 20px">📋 Copy Code</button>
+      <button class="btn-ghost" onclick="shareRefWhatsApp()" style="padding:10px 20px;border-radius:10px">📱 Share on WhatsApp</button>
+    </div>
+  </div>
+
+  <!-- SAVED RESUMES -->
+  <div class="section-title">📄 Your Saved Resumes</div>
+  <div class="resume-list" id="resume-list">
+    <div class="empty-state">
+      <div class="empty-icon">⏳</div>
+      <p>Loading your resumes...</p>
+    </div>
+  </div>
+
+</div><!-- /dash-wrap -->
+
+<script src="config.js"></script>
+<script src="firebase-service.js"></script>
+<script>
+  // ── Dashboard Init ─────────────────────────────────────────
+  document.addEventListener('DOMContentLoaded', () => {
+    initFirebase();
+  });
+
+  // Overwrite listenAuthState to populate dashboard
+  const _origListen = listenAuthState;
+
+  // Poll until Firebase is ready and user is loaded
+  let _dashInterval = setInterval(async () => {
+    if (typeof currentUser === 'undefined') return;
+
+    clearInterval(_dashInterval);
+
+    if (!currentUser) {
+      // Not logged in — redirect to home
+      window.location = 'index.html';
+      return;
+    }
+
+    // Wait for userProfile
+    let tries = 0;
+    while (!userProfile && tries < 20) {
+      await new Promise(r => setTimeout(r, 300));
+      tries++;
+    }
+
+    populateDashboard();
+  }, 300);
+
+  async function populateDashboard() {
+    const user    = currentUser;
+    const profile = userProfile;
+
+    // Greeting
+    const firstName = user.displayName?.split(' ')[0] || 'there';
+    document.getElementById('dash-name').textContent = firstName;
+    document.getElementById('dash-user-name').textContent = user.email;
+
+    // Plan
+    const pro = isPro();
+    const badge  = document.getElementById('plan-badge');
+    const planEl = document.getElementById('stat-plan');
+    const planText = document.getElementById('dash-plan-text');
+
+    if (pro) {
+      badge.className = 'plan-badge pro';
+      badge.textContent = '⚡ Pro Member';
+      planEl.textContent = 'Pro';
+      planText.textContent = '🎉 You have full Pro access to all tools!';
+
+      const expiry = profile?.planExpiry?.toDate?.();
+      document.getElementById('stat-expiry').textContent = expiry
+        ? `Renews: ${expiry.toLocaleDateString('en-IN', {day:'numeric',month:'long',year:'numeric'})}`
+        : 'Active subscription';
+    } else {
+      badge.className = 'plan-badge free';
+      badge.textContent = 'Free Plan';
+      planEl.textContent = 'Free';
+      document.getElementById('stat-expiry').textContent = '3 free uses per account';
+      document.getElementById('upgrade-card').style.display = 'block';
+      planText.textContent = `Free plan · ${CONFIG.FREE_TRIALS - (profile?.usageCount || 0)} uses remaining`;
+    }
+
+    // Usage
+    const uses = profile?.usageCount || 0;
+    document.getElementById('stat-uses').textContent = uses;
+    document.getElementById('stat-uses-sub').textContent = pro
+      ? 'Unlimited — Pro member'
+      : `${Math.max(0, CONFIG.FREE_TRIALS - uses)} free uses remaining`;
+
+    // Referrals
+    document.getElementById('stat-refs').textContent = profile?.referralCount || 0;
+
+    // Referral code
+    const code = profile?.referralCode || generateCode(user.uid);
+    document.getElementById('ref-code-big').textContent = code;
+
+    // Load resumes
+    await loadResumes();
+  }
+
+  async function loadResumes() {
+    const list = document.getElementById('resume-list');
+    try {
+      const resumes = await getResumes();
+      if (!resumes.length) {
+        list.innerHTML = `
+          <div class="empty-state">
+            <div class="empty-icon">📄</div>
+            <p>No resumes saved yet.</p>
+            <a href="index.html#tools" class="btn-primary" style="display:inline-block;margin-top:16px;text-decoration:none">Build Your First Resume →</a>
+          </div>`;
+        document.getElementById('stat-resumes').textContent = '0';
+        return;
+      }
+
+      document.getElementById('stat-resumes').textContent = resumes.length;
+      list.innerHTML = resumes.map(r => `
+        <div class="resume-item">
+          <div class="resume-item-info">
+            <div class="res-name">${r.name || 'Resume'}</div>
+            <div class="res-role">${r.role || ''}</div>
+            ${r.atsScore ? `<div class="res-ats">ATS Score: ${r.atsScore}/100</div>` : ''}
+          </div>
+          <div class="resume-actions">
+            <button class="res-btn" onclick="copyResumeText('${r.id}')">📋 Copy</button>
+            <button class="res-btn" onclick="deleteResume('${r.id}')">🗑️ Delete</button>
+          </div>
+        </div>`).join('');
+    } catch (e) {
+      list.innerHTML = `<div class="empty-state"><p>Could not load resumes. Check Firebase config.</p></div>`;
+    }
+  }
+
+  function copyRefCode() {
+    const code = document.getElementById('ref-code-big').textContent;
+    navigator.clipboard.writeText(code).then(() => {
+      showToast('✅ Referral code copied!', 'success');
+    });
+  }
+
+  function shareRefWhatsApp() {
+    const code = document.getElementById('ref-code-big').textContent;
+    const msg = `🚀 Hey! I'm using CareerAI India to build my resume and prep for interviews.\n\nUse my code *${code}* when you sign up — we both get 1 FREE month!\n\n👉 Try it free: ${CONFIG.SITE_URL}`;
+    window.open(`https://wa.me/?text=${encodeURIComponent(msg)}`, '_blank');
+  }
+
+  async function deleteResume(id) {
+    if (!confirm('Delete this resume?')) return;
+    if (!db || !currentUser) return;
+    try {
+      await db.collection('users').doc(currentUser.uid).collection('resumes').doc(id).delete();
+      showToast('Resume deleted', 'info');
+      await loadResumes();
+    } catch (e) {
+      showToast('Could not delete resume', 'error');
+    }
+  }
+
+  function copyResumeText(id) {
+    showToast('Opening resume... (Copy from index.html Resume Builder)', 'info');
+    // Future: Open resume detail modal
+  }
+
+  // Reuse toast from firebase-service
+  function showToast(msg, type = 'info') {
+    const existing = document.getElementById('toast');
+    if (existing) existing.remove();
+    const colors = { success:'#4caf50', error:'#f44336', warning:'#FF6B35', info:'#1a1aff' };
+    const icons  = { success:'✅', error:'❌', warning:'⚡', info:'ℹ️' };
+    const toast = document.createElement('div');
+    toast.id = 'toast';
+    toast.style.cssText = `position:fixed;bottom:24px;right:24px;z-index:9999;background:#1a1d28;border:1px solid ${colors[type]}44;border-left:4px solid ${colors[type]};color:#dde;padding:14px 20px;border-radius:12px;font-size:0.9rem;font-weight:500;max-width:360px;box-shadow:0 8px 32px rgba(0,0,0,0.4);animation:slideInRight 0.3s ease;font-family:Inter,sans-serif;display:flex;align-items:center;gap:10px;`;
+    toast.innerHTML = `<span style="font-size:1.1rem">${icons[type]}</span><span>${msg}</span>`;
+    document.body.appendChild(toast);
+    setTimeout(() => { toast.style.animation = 'slideOutRight 0.3s ease forwards'; setTimeout(() => toast.remove(), 300); }, 4000);
+  }
+</script>
+</body>
+</html>

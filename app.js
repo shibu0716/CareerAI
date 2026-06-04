@@ -13,6 +13,8 @@ document.addEventListener('DOMContentLoaded', () => {
   setupPayMethodTabs();
   restoreLanguage();
   checkPendingActivation();
+  setupExitIntent();
+  startCountdownTimer();
 });
 
 // ── NAVBAR ───────────────────────────────────────────────────
@@ -31,6 +33,7 @@ async function checkPendingActivation() {
     localStorage.removeItem('careerai_pending_plan');
     localStorage.removeItem('careerai_pending_payment');
     showToast('✅ Your Pro plan is now active!', 'success');
+    showSection('success');
   }
 }
 
@@ -192,16 +195,14 @@ function setupPayMethodTabs() {
 }
 
 let selectedPlan = 'monthly';
+
 function selectPlan(plan) {
   selectedPlan = plan;
-  const labels = { monthly: '₹99 — Monthly Pro', annual: '₹799 — Annual Pro' };
-  const el = document.getElementById('pay-plan-label');
-  if (el) el.textContent = labels[plan];
-  showSection('payment');
+  openUpiPayment(plan);   // show UPI QR + UTR form
 }
 
-async function handlePayment() {
-  await openUpiPayment(selectedPlan);
+function handlePayment() {
+  openUpiPayment(selectedPlan);
 }
 
 // Re-open WhatsApp if it didn't launch automatically
@@ -211,6 +212,43 @@ function reopenWhatsApp() {
   } else {
     window.open(CONFIG.SUPPORT_WA, '_blank');
   }
+}
+
+// ════════════════════════════════════════════════════════════
+//  UPGRADE MODAL (smarter paywall — shows social proof)
+// ════════════════════════════════════════════════════════════
+function showSmartUpgrade(toolName) {
+  const overlay = document.getElementById('upgrade-overlay');
+  if (!overlay) return;
+  const nameEl = document.getElementById('upgrade-tool-name');
+  if (nameEl) nameEl.textContent = toolName || 'this tool';
+  overlay.classList.add('active');
+  startCountdownTimer();
+}
+
+function closeUpgrade() {
+  const overlay = document.getElementById('upgrade-overlay');
+  if (overlay) overlay.classList.remove('active');
+}
+
+// ── COUNTDOWN TIMER (pricing urgency) ────────────────────────
+function startCountdownTimer() {
+  const el = document.getElementById('countdown-timer');
+  if (!el) return;
+  // Count down from 15 minutes (refreshes on reload — creates urgency)
+  let saved = parseInt(sessionStorage.getItem('careerai_countdown') || '');
+  if (!saved || saved < Date.now()) {
+    saved = Date.now() + 15 * 60 * 1000;
+    sessionStorage.setItem('careerai_countdown', saved);
+  }
+  clearInterval(window._countdownInterval);
+  window._countdownInterval = setInterval(() => {
+    const diff = Math.max(0, saved - Date.now());
+    const m = Math.floor(diff / 60000);
+    const s = Math.floor((diff % 60000) / 1000);
+    el.textContent = `${m}:${String(s).padStart(2,'0')}`;
+    if (diff === 0) clearInterval(window._countdownInterval);
+  }, 1000);
 }
 
 // ════════════════════════════════════════════════════════════
@@ -708,6 +746,123 @@ function setupIntersectionObserver() {
     el.classList.add('will-animate');
     obs.observe(el);
   });
+}
+
+// ════════════════════════════════════════════════════════════
+//  WHATSAPP SHARE (viral growth tool)
+// ════════════════════════════════════════════════════════════
+function shareOnWhatsApp(toolName, result) {
+  const referralCode = userProfile?.referralCode || '';
+  const refText = referralCode ? `\n\n🎁 Use my referral code *${referralCode}* for 1 extra free use: ${CONFIG.SITE_URL}` : '';
+  const msg = `🚀 Just used CareerAI India's ${toolName} (powered by Google Gemini AI!)\n\n${result ? result.substring(0, 200) + '...' : ''}${refText}\n\n👉 Try it free: ${CONFIG.SITE_URL}`;
+  window.open(`https://wa.me/?text=${encodeURIComponent(msg)}`, '_blank');
+  trackEvent('whatsapp_share', { tool: toolName });
+}
+
+function showViralSharePopup() {
+  const existing = document.getElementById('viral-popup');
+  if (existing) existing.remove();
+
+  const popup = document.createElement('div');
+  popup.id = 'viral-popup';
+  popup.style.cssText = `
+    position: fixed; inset: 0; background: rgba(0,0,0,0.85); backdrop-filter: blur(8px);
+    z-index: 9999; display: flex; align-items: center; justify-content: center; padding: 24px;
+  `;
+  
+  popup.innerHTML = `
+    <div style="background:var(--card);border:1px solid rgba(37,211,102,0.4);border-radius:24px;padding:40px 32px;max-width:440px;width:100%;text-align:center;box-shadow:0 20px 80px rgba(37,211,102,0.15)">
+      <div style="font-size:3.5rem;margin-bottom:16px">🎁</div>
+      <h2 style="font-size:1.6rem;font-weight:900;margin-bottom:12px">You're out of free credits!</h2>
+      <p style="color:var(--text-muted);margin-bottom:24px;line-height:1.6">You've reached your free limit. But wait — you can <strong style="color:#fff">unlock 1 more free AI generation</strong> right now by sharing CareerAI with a friend on WhatsApp!</p>
+      
+      <button onclick="executeViralShare()" style="width:100%;background:#25D366;color:#fff;border:none;border-radius:12px;padding:16px;font-size:1.1rem;font-weight:800;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:12px;margin-bottom:16px;transition:transform 0.2s;box-shadow:0 8px 24px rgba(37,211,102,0.3)">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path></svg>
+        Share to Unlock Free Use
+      </button>
+      
+      <button onclick="closeViralPopupAndPay()" style="background:none;border:none;color:var(--text-muted);font-size:0.9rem;text-decoration:underline;cursor:pointer">No thanks, I'll pay ₹99 for Pro</button>
+    </div>
+  `;
+  document.body.appendChild(popup);
+}
+
+function executeViralShare() {
+  const msg = `🚀 Check out CareerAI India! It's an AI that builds ATS-friendly resumes and preps you for TCS/Infosys interviews in 5 minutes.\n\n👉 Try it free: ${CONFIG.SITE_URL}`;
+  window.open(`https://wa.me/?text=${encodeURIComponent(msg)}`, '_blank');
+  
+  // They clicked share, so we unlock it for them
+  localStorage.setItem('careerai_shared_wa', '1');
+  
+  const popup = document.getElementById('viral-popup');
+  if (popup) {
+    popup.innerHTML = `
+      <div style="background:var(--card);border:1px solid #4caf50;border-radius:24px;padding:40px 32px;max-width:440px;width:100%;text-align:center">
+        <div style="font-size:3.5rem;margin-bottom:16px">✅</div>
+        <h2 style="font-size:1.6rem;font-weight:900;margin-bottom:12px;color:#4caf50">Unlocked!</h2>
+        <p style="color:var(--text-muted);margin-bottom:24px">Thank you for sharing! Your extra free AI generation has been unlocked.</p>
+        <button onclick="document.getElementById('viral-popup').remove()" class="btn-primary" style="width:100%">Continue Using App →</button>
+      </div>
+    `;
+  }
+}
+
+function closeViralPopupAndPay() {
+  document.getElementById('viral-popup')?.remove();
+  if (!currentUser) showSection('signup');
+  else showSection('payment');
+}
+
+
+// ════════════════════════════════════════════════════════════
+//  REFERRAL NUDGE (show after each generation for free users)
+// ════════════════════════════════════════════════════════════
+function showReferralNudge(outputEl) {
+  if (!currentUser || isPro()) return;
+  const code = userProfile?.referralCode;
+  if (!code) return;
+  const existing = outputEl.querySelector('.referral-nudge');
+  if (existing) return; // don't duplicate
+  const nudge = document.createElement('div');
+  nudge.className = 'referral-nudge';
+  nudge.innerHTML = `
+    <div class="ref-nudge-inner">
+      <span class="ref-icon">🎁</span>
+      <div>
+        <div class="ref-title">Refer a friend → Get 1 FREE month!</div>
+        <div class="ref-code-row">
+          <span class="ref-code" id="ref-code-display">${code}</span>
+          <button onclick="copyRaw('${code}');showToast('Code copied! Share on WhatsApp 🚀','success')" class="ref-copy-btn">📋 Copy</button>
+        </div>
+        <div class="ref-sub">Share your code. When they subscribe, you both win!</div>
+      </div>
+    </div>`;
+  outputEl.appendChild(nudge);
+}
+
+// ════════════════════════════════════════════════════════════
+//  EXIT-INTENT POPUP
+// ════════════════════════════════════════════════════════════
+function setupExitIntent() {
+  let shown = sessionStorage.getItem('exit_intent_shown');
+  if (shown) return;
+  document.addEventListener('mouseleave', (e) => {
+    if (e.clientY < 10 && !shown && !currentUser) {
+      shown = '1';
+      sessionStorage.setItem('exit_intent_shown', '1');
+      showExitPopup();
+    }
+  });
+}
+
+function showExitPopup() {
+  const popup = document.getElementById('exit-popup');
+  if (popup) popup.classList.add('active');
+}
+
+function closeExitPopup() {
+  const popup = document.getElementById('exit-popup');
+  if (popup) popup.classList.remove('active');
 }
 
 // ════════════════════════════════════════════════════════════

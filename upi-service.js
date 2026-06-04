@@ -1,10 +1,12 @@
 /**
  * CareerAI India — UPI Payment Service
- * Flow: QR / UPI ID → User pays → Enters UTR → WhatsApp sent to owner → Owner activates
+ * Fallback flow (when Razorpay not configured):
+ * QR / UPI ID → User pays → Enters UTR → WhatsApp sent to owner → Owner activates in Firebase
  */
 
-const UPI_ID   = 'shibuthegenius@ybl';
-const UPI_NAME = 'CareerAI India';
+// Read from CONFIG (single source of truth — set in config.js)
+const UPI_ID   = CONFIG?.UPI_ID   || 'your-upi@bank';
+const UPI_NAME = CONFIG?.UPI_NAME || 'CareerAI India';
 
 // ── OPEN UPI PAYMENT MODAL ────────────────────────────────────
 async function openUpiPayment(planKey) {

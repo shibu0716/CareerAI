@@ -1,5 +1,5 @@
 /**
- * razorpay-service.js — REMOVED
- * This file is no longer used. Payment is handled via UPI (upi-service.js).
- * UPI ID: shibuthegenius@ybl
+ * CareerAI India — Razorpay service (not used)
+ * Payment is handled via UPI QR code + manual WhatsApp verification.
+ * See upi-service.js for the active payment flow.
  */

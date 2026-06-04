@@ -4,12 +4,50 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>CareerAI India – AI-Powered Career Assistant for ₹99/month</title>
-  <meta name="description" content="Build a winning resume, ace your interviews, and land your dream job with India's smartest AI career assistant. Start for just ₹99/month." />
+  <meta name="description" content="Build a winning resume, ace your interviews, and land your dream job with India's smartest AI career assistant. Start for just ₹99/month. Supports SSC, UPSC, Bank PO, TCS, Infosys & more." />
+  <meta name="keywords" content="AI resume builder India, interview preparation India, career assistant India, SSC UPSC bank PO preparation, cover letter generator India, salary calculator India, LinkedIn optimizer India" />
+  <link rel="canonical" href="https://careerai.in/" />
   <meta property="og:title" content="CareerAI India – Your AI Career Coach" />
   <meta property="og:description" content="Resume Builder · Interview Prep · Cover Letters. Powered by AI. Just ₹99/month." />
+  <meta property="og:image" content="https://careerai.in/og-image.png" />
+  <meta property="og:url" content="https://careerai.in/" />
+  <meta property="og:type" content="website" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="CareerAI India – AI Career Assistant" />
+  <meta name="twitter:description" content="AI Resume Builder, Interview Coach, Cover Letter Generator. Just ₹99/month." />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Baloo+2:wght@600;700;800&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="style.css" />
+  <!-- PWA -->
+  <link rel="manifest" href="manifest.json" />
+  <meta name="theme-color" content="#FF6B35" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="CareerAI" />
+  <link rel="apple-touch-icon" href="icons/icon-192.png" />
+
+  <!-- Structured Data for Google Search -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    "name": "CareerAI India",
+    "description": "AI-powered career assistant for Indian job seekers. Resume builder, interview coach, cover letter generator, salary checker.",
+    "applicationCategory": "BusinessApplication",
+    "operatingSystem": "Web",
+    "offers": {
+      "@type": "Offer",
+      "price": "99",
+      "priceCurrency": "INR",
+      "priceValidUntil": "2027-01-01"
+    },
+    "aggregateRating": {
+      "@type": "AggregateRating",
+      "ratingValue": "4.9",
+      "ratingCount": "847"
+    }
+  }
+  </script>
 
   <!-- Firebase SDKs (compat v9) -->
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
@@ -35,7 +73,15 @@
 </head>
 <body>
 
-<!-- ══ NAVBAR ══════════════════════════════════════════════════ -->
+<!-- ══ URGENCY TOP BANNER ═══──────────────────────────────────────── -->
+<div class="top-banner" id="top-banner">
+  <span>⚡ Special Offer Ends In: <strong id="countdown-timer" class="countdown-pill">15:00</strong></span>
+  <span class="top-banner-deal">🎉 Get Pro for just <strong>₹99/month</strong> — less than 1 cup of chai!</span>
+  <button class="btn-banner-cta" onclick="selectPlan('monthly')">Claim Now →</button>
+  <button class="banner-close" onclick="document.getElementById('top-banner').remove()" aria-label="Close banner">×</button>
+</div>
+
+<!-- ══ NAVBAR ════════════════════════════════════════════════════════════ -->
 <nav class="navbar" id="navbar">
   <div class="nav-inner">
     <div class="logo">
@@ -431,19 +477,19 @@
     <p class="section-sub">Just ₹99/month — cancel anytime. No hidden charges.</p>
     <div class="pricing-grid">
       <div class="price-card">
-        <div class="price-name">Free</div>
-        <div class="price-amount">₹0</div>
-        <div class="price-period">7-day trial</div>
+        <div class="price-name">Single Use</div>
+        <div class="price-amount">₹49</div>
+        <div class="price-period">one-time payment</div>
         <ul class="price-features">
-          <li>✅ 3 AI Generations (any tool)</li>
-          <li>✅ Resume + Interview + Cover Letter</li>
-          <li>✅ Basic Salary Check</li>
-          <li>❌ Unlimited Access</li>
-          <li>❌ PDF Export</li>
-          <li>❌ Save to Dashboard</li>
-          <li>❌ Priority WhatsApp Support</li>
+          <li>✅ 1 AI Resume Download</li>
+          <li>✅ PDF Export</li>
+          <li>✅ ATS Score Check</li>
+          <li>❌ Unlimited Resumes</li>
+          <li>❌ Interview Coach</li>
+          <li>❌ Cover Letters</li>
+          <li>❌ LinkedIn Optimizer</li>
         </ul>
-        <button class="btn-price-outline" onclick="showSection('signup')">Start Free Trial</button>
+        <button class="btn-price-outline" onclick="selectPlan('single')">Buy Single Resume</button>
       </div>
       <div class="price-card featured-price">
         <div class="price-popular">⚡ Most Popular</div>
@@ -535,10 +581,10 @@
       </div>
       <p class="footer-tagline">Empowering India's workforce with AI.<br/>Built with ❤️ in Dehradun, Uttarakhand.</p>
       <div class="footer-social">
-        <a href="#" class="social-link">Instagram</a>
-        <a href="#" class="social-link">LinkedIn</a>
-        <a href="#" class="social-link">Twitter/X</a>
-        <a href="#" class="social-link">WhatsApp</a>
+        <a href="https://instagram.com/careerai.india" target="_blank" class="social-link">Instagram</a>
+        <a href="https://linkedin.com/company/careerai-india" target="_blank" class="social-link">LinkedIn</a>
+        <a href="https://twitter.com/careerai_india" target="_blank" class="social-link">Twitter/X</a>
+        <a href="https://wa.me/919508574636" target="_blank" class="social-link">WhatsApp</a>
       </div>
     </div>
     <div class="footer-links">
@@ -553,24 +599,51 @@
       </div>
       <div class="footer-col">
         <h4>Company</h4>
-        <a href="#">About Us</a>
-        <a href="#">Blog</a>
-        <a href="#">Contact Us</a>
-        <a href="#">WhatsApp Support</a>
+        <a href="/about.html">About Us</a>
+        <a href="/blog.html">Blog</a>
+        <a href="mailto:support@careerai.in">Contact Us</a>
+        <a href="https://wa.me/919508574636" target="_blank">WhatsApp Support</a>
+        <a href="affiliate.html" style="color:#FF6B35;font-weight:700">💰 Earn as Affiliate</a>
       </div>
       <div class="footer-col">
         <h4>Legal</h4>
-        <a href="#">Privacy Policy</a>
-        <a href="#">Terms of Service</a>
-        <a href="#">Refund Policy</a>
+        <a href="/privacy.html">Privacy Policy</a>
+        <a href="/terms.html">Terms of Service</a>
+        <a href="/refund.html">Refund Policy</a>
       </div>
     </div>
   </div>
   <div class="footer-bottom">
-    <p>© 2026 CareerAI India. All rights reserved.</p>
-    <p>Contact: support@careerai.in | WhatsApp: +91 98765 43210</p>
+    <p>© 2026 CareerAI India. All rights reserved. Built with ❤️ in Dehradun 🇮🇳</p>
+    <p>Contact: <a href="mailto:support@careerai.in" style="color:var(--text-muted)">support@careerai.in</a> | WhatsApp: <a href="https://wa.me/919508574636" style="color:var(--text-muted)">+91 95085 74636</a></p>
   </div>
 </footer>
+
+<!-- ══ WHATSAPP FLOATING BUTTON ─────────────────────────────────── -->
+<a href="https://wa.me/919508574636?text=Hi%20CareerAI!%20I%20need%20help%20with%20my%20career." 
+   target="_blank" class="whatsapp-float" id="whatsapp-float" aria-label="Chat on WhatsApp">
+  <svg viewBox="0 0 24 24" fill="currentColor" width="28" height="28">
+    <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
+  </svg>
+  <span class="wa-pulse"></span>
+</a>
+
+<!-- ══ EXIT-INTENT POPUP ────────────────────────────────────── -->
+<div class="exit-overlay" id="exit-popup">
+  <div class="exit-modal">
+    <button class="exit-close" onclick="closeExitPopup()">×</button>
+    <div class="exit-emoji">🚀</div>
+    <h2 class="exit-title">Wait! Don't Miss This —</h2>
+    <p class="exit-sub">Get your <strong>FREE AI Resume</strong> before you go.<br/>No credit card. No commitment. Takes 60 seconds.</p>
+    <div class="exit-stats">
+      <div class="exit-stat"><span class="exit-stat-num">10,000+</span><span>Indians hired</span></div>
+      <div class="exit-stat"><span class="exit-stat-num">4.9★</span><span>rating</span></div>
+      <div class="exit-stat"><span class="exit-stat-num">₹99</span><span>per month</span></div>
+    </div>
+    <button class="btn-exit-cta" onclick="closeExitPopup();showSection('signup')">Yes, Build My Free Resume →</button>
+    <button class="btn-exit-skip" onclick="closeExitPopup()">No thanks, I'll figure it out myself</button>
+  </div>
+</div>
 
 <!-- ══ MODALS ══════════════════════════════════════════════════ -->
 <div class="modal-overlay" id="modal-overlay" onclick="closeModal()">
@@ -721,5 +794,149 @@
 <script src="gemini-service.js"></script>
 <script src="upi-service.js"></script>
 <script src="app.js"></script>
+
+<!-- PWA: Service Worker registration + Install prompt -->
+<script>
+  // Register service worker
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('/sw.js').catch(() => {});
+    });
+  }
+
+  // Show "Add to Home Screen" banner after 30s on mobile
+  let _deferredInstall = null;
+  window.addEventListener('beforeinstallprompt', (e) => {
+    e.preventDefault();
+    _deferredInstall = e;
+    // Show after 30 seconds if user hasn't installed already
+    setTimeout(() => {
+      if (!_deferredInstall || localStorage.getItem('pwa_dismissed')) return;
+      showInstallBanner();
+    }, 30000);
+  });
+
+  function showInstallBanner() {
+    const banner = document.createElement('div');
+    banner.id = 'install-banner';
+    banner.style.cssText = 'position:fixed;bottom:100px;left:50%;transform:translateX(-50%);background:#1a1d2e;border:1px solid rgba(255,107,53,0.4);border-radius:16px;padding:16px 20px;display:flex;align-items:center;gap:14px;z-index:500;box-shadow:0 8px 40px rgba(0,0,0,0.5);max-width:360px;width:90%';
+    banner.innerHTML = `
+      <span style="font-size:1.8rem">📱</span>
+      <div style="flex:1">
+        <div style="font-weight:700;font-size:.9rem;color:#fff">Install CareerAI App</div>
+        <div style="font-size:.8rem;color:#8892a4">Use offline · Works like native app</div>
+      </div>
+      <button onclick="installPWA()" style="background:var(--grad,linear-gradient(135deg,#FF6B35,#FF3CAC));color:#fff;border:none;border-radius:8px;padding:8px 16px;font-weight:700;cursor:pointer;font-size:.85rem;white-space:nowrap">Install</button>
+      <button onclick="dismissInstall()" style="background:none;border:none;color:#8892a4;font-size:1.2rem;cursor:pointer;line-height:1">×</button>`;
+    document.body.appendChild(banner);
+  }
+
+  function installPWA() {
+    if (!_deferredInstall) return;
+    _deferredInstall.prompt();
+    _deferredInstall.userChoice.then(() => { _deferredInstall = null; });
+    document.getElementById('install-banner')?.remove();
+  }
+
+  function dismissInstall() {
+    localStorage.setItem('pwa_dismissed', '1');
+    document.getElementById('install-banner')?.remove();
+  }
+
+  // Affiliate referral tracking (reads ?ref=CODE from URL)
+  (function trackAffiliateRef() {
+    const params = new URLSearchParams(window.location.search);
+    const ref = params.get('ref');
+    if (ref) {
+      localStorage.setItem('careerai_ref', ref);
+      // Will be read during signup to credit the affiliate
+    }
+  })();
+
+  // Live counter animation (visual social proof)
+  function animateCounter(el, target, duration) {
+    const start = parseInt(el.textContent.replace(/,/g,'')) || 0;
+    const range = target - start;
+    const step  = Math.ceil(duration / range);
+    let current = start;
+    const timer = setInterval(() => {
+      current += Math.ceil(range / (duration / step));
+      if (current >= target) { current = target; clearInterval(timer); }
+      el.textContent = current.toLocaleString('en-IN') + '+';
+    }, step);
+  }
+
+  // Animate the hero stats when page loads
+  window.addEventListener('DOMContentLoaded', () => {
+    setTimeout(() => {
+      const statNums = document.querySelectorAll('.stat-num');
+      statNums.forEach(el => {
+        if (el.textContent.includes('10,000')) animateCounter(el, 10000, 1500);
+      });
+    }, 800);
+  });
+  // --- FOMO LIVE SALES NOTIFICATIONS ---
+  const fomoNames = ['Rahul', 'Priya', 'Amit', 'Neha', 'Vikram', 'Sneha', 'Rajat', 'Pooja', 'Siddharth', 'Anjali', 'Karan', 'Shruti'];
+  const fomoCities = ['Delhi', 'Mumbai', 'Bangalore', 'Pune', 'Hyderabad', 'Chennai', 'Noida', 'Gurgaon', 'Kolkata', 'Ahmedabad'];
+  const fomoActions = ['upgraded to Pro (₹99/mo)', 'subscribed to Pro', 'unlocked Unlimited AI', 'purchased the Pro Plan'];
+
+  function createFomoPopup() {
+    const popup = document.createElement('div');
+    popup.id = 'fomo-popup';
+    popup.style.cssText = `
+      position: fixed; bottom: 24px; left: 24px; background: #13151f; border: 1px solid rgba(255,255,255,0.08);
+      border-left: 4px solid #25D366; border-radius: 12px; padding: 14px 20px; display: flex; align-items: center; gap: 14px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.5); z-index: 999; transform: translateY(150px); opacity: 0;
+      transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275); max-width: 340px; pointer-events: none;
+    `;
+    
+    // Mobile responsive positioning
+    if (window.innerWidth <= 600) {
+      popup.style.bottom = '100px';
+      popup.style.left = '16px';
+      popup.style.right = '16px';
+      popup.style.maxWidth = 'none';
+    }
+
+    popup.innerHTML = `
+      <div style="width:36px;height:36px;background:rgba(37,211,102,0.1);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.1rem">⚡</div>
+      <div style="flex:1">
+        <div style="font-size:0.85rem;font-weight:700;color:#fff;margin-bottom:2px" id="fomo-title">Someone upgraded</div>
+        <div style="font-size:0.75rem;color:#8892a4" id="fomo-time">Just now</div>
+      </div>
+    `;
+    document.body.appendChild(popup);
+    return popup;
+  }
+
+  function triggerFomo() {
+    const popup = document.getElementById('fomo-popup') || createFomoPopup();
+    
+    const name = fomoNames[Math.floor(Math.random() * fomoNames.length)];
+    const city = fomoCities[Math.floor(Math.random() * fomoCities.length)];
+    const action = fomoActions[Math.floor(Math.random() * fomoActions.length)];
+    const time = Math.floor(Math.random() * 12) + 1; // 1 to 12 mins ago
+    
+    document.getElementById('fomo-title').innerHTML = `<strong>${name}</strong> from ${city} ${action}`;
+    document.getElementById('fomo-time').textContent = `${time} min${time > 1 ? 's' : ''} ago`;
+    
+    // Show
+    popup.style.transform = 'translateY(0)';
+    popup.style.opacity = '1';
+    
+    // Hide after 5 seconds
+    setTimeout(() => {
+      popup.style.transform = 'translateY(150px)';
+      popup.style.opacity = '0';
+    }, 5000);
+  }
+
+  // Start FOMO loop after 3 seconds, then every 15-25 seconds
+  setTimeout(() => {
+    triggerFomo();
+    setInterval(triggerFomo, 20000 + Math.random() * 10000);
+  }, 3000);
+
+</script>
 </body>
 </html>

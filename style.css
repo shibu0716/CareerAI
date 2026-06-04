@@ -1105,3 +1105,220 @@ select option { background: var(--bg3); }
   .modal { padding: 24px; }
   .pricing-grid, .features-grid, .testimonials-grid { grid-template-columns: 1fr; }
 }
+
+/* ═══════════════════════════════════════════
+   GROWTH UI — Top Banner, WhatsApp, Popups
+   ═══════════════════════════════════════════ */
+
+/* ── TOP URGENCY BANNER ── */
+.top-banner {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 200;
+  background: linear-gradient(90deg, #FF6B35 0%, #FF3CAC 50%, #784BA0 100%);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+  padding: 10px 20px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  flex-wrap: wrap;
+}
+.top-banner + .navbar { top: 44px; }
+.countdown-pill {
+  background: rgba(255,255,255,0.25);
+  border-radius: 100px;
+  padding: 2px 10px;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 1px;
+}
+.top-banner-deal { opacity: 0.95; }
+.btn-banner-cta {
+  background: #fff;
+  color: #FF6B35;
+  border: none;
+  border-radius: 100px;
+  padding: 6px 18px;
+  font-size: 0.8rem;
+  font-weight: 800;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-family: var(--font);
+  white-space: nowrap;
+}
+.btn-banner-cta:hover { transform: scale(1.04); box-shadow: 0 4px 16px rgba(0,0,0,0.2); }
+.banner-close {
+  background: none;
+  border: none;
+  color: rgba(255,255,255,0.8);
+  font-size: 1.1rem;
+  cursor: pointer;
+  padding: 2px 6px;
+  line-height: 1;
+  margin-left: 4px;
+}
+.banner-close:hover { color: #fff; }
+
+/* ── WHATSAPP FLOAT BUTTON ── */
+.whatsapp-float {
+  position: fixed;
+  bottom: 28px;
+  right: 28px;
+  z-index: 500;
+  width: 60px;
+  height: 60px;
+  background: #25D366;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  box-shadow: 0 6px 28px rgba(37,211,102,0.45);
+  transition: all 0.3s;
+  text-decoration: none;
+}
+.whatsapp-float:hover { transform: scale(1.12); box-shadow: 0 10px 40px rgba(37,211,102,0.55); }
+.wa-pulse {
+  position: absolute;
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background: rgba(37,211,102,0.4);
+  animation: waPulse 2s ease-out infinite;
+}
+@keyframes waPulse {
+  0%   { transform: scale(1); opacity: 0.7; }
+  100% { transform: scale(1.9); opacity: 0; }
+}
+
+/* ── EXIT-INTENT POPUP ── */
+.exit-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.85);
+  backdrop-filter: blur(10px);
+  z-index: 1000;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+}
+.exit-overlay.active { display: flex; }
+.exit-modal {
+  background: var(--card);
+  border: 1px solid rgba(255,107,53,0.3);
+  border-radius: 24px;
+  padding: 48px 40px;
+  max-width: 480px;
+  width: 100%;
+  text-align: center;
+  position: relative;
+  box-shadow: 0 30px 100px rgba(0,0,0,0.6), 0 0 80px rgba(255,107,53,0.1);
+}
+.exit-close {
+  position: absolute;
+  top: 16px; right: 20px;
+  background: none;
+  border: none;
+  color: var(--text-muted);
+  font-size: 1.4rem;
+  cursor: pointer;
+  line-height: 1;
+  padding: 4px;
+}
+.exit-close:hover { color: var(--text); }
+.exit-emoji { font-size: 3.5rem; margin-bottom: 16px; }
+.exit-title { font-size: 1.6rem; font-weight: 800; margin-bottom: 12px; }
+.exit-sub { color: var(--text-muted); font-size: 0.95rem; line-height: 1.7; margin-bottom: 28px; }
+.exit-sub strong { color: var(--text); }
+.exit-stats {
+  display: flex;
+  justify-content: center;
+  gap: 32px;
+  margin-bottom: 28px;
+  padding: 16px;
+  background: rgba(255,255,255,0.03);
+  border-radius: 12px;
+}
+.exit-stat { display: flex; flex-direction: column; align-items: center; gap: 4px; }
+.exit-stat-num { font-size: 1.3rem; font-weight: 900; color: var(--primary); }
+.exit-stat span:last-child { font-size: 0.75rem; color: var(--text-muted); }
+.btn-exit-cta {
+  width: 100%;
+  background: var(--grad);
+  color: #fff;
+  border: none;
+  border-radius: 12px;
+  padding: 16px 24px;
+  font-size: 1rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-family: var(--font);
+  margin-bottom: 12px;
+}
+.btn-exit-cta:hover { transform: translateY(-2px); box-shadow: 0 8px 32px rgba(255,107,53,0.4); }
+.btn-exit-skip {
+  background: none;
+  border: none;
+  color: var(--text-muted);
+  font-size: 0.82rem;
+  cursor: pointer;
+  text-decoration: underline;
+  font-family: var(--font);
+}
+
+/* ── REFERRAL NUDGE (shown in tool output) ── */
+.referral-nudge {
+  margin-top: 20px;
+  border-top: 1px solid rgba(255,255,255,0.06);
+  padding-top: 16px;
+}
+.ref-nudge-inner {
+  display: flex;
+  gap: 14px;
+  align-items: flex-start;
+  background: rgba(255,107,53,0.06);
+  border: 1px solid rgba(255,107,53,0.2);
+  border-radius: 12px;
+  padding: 16px;
+}
+.ref-icon { font-size: 1.5rem; flex-shrink: 0; }
+.ref-title { font-weight: 700; font-size: 0.9rem; color: var(--text); margin-bottom: 6px; }
+.ref-code-row { display: flex; align-items: center; gap: 8px; margin-bottom: 6px; }
+.ref-code {
+  font-size: 1rem;
+  font-weight: 800;
+  letter-spacing: 2px;
+  color: #FF6B35;
+  background: rgba(255,107,53,0.1);
+  padding: 4px 12px;
+  border-radius: 6px;
+}
+.ref-copy-btn {
+  background: rgba(255,107,53,0.15);
+  border: 1px solid rgba(255,107,53,0.3);
+  color: var(--primary);
+  border-radius: 6px;
+  padding: 4px 12px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: var(--font);
+}
+.ref-sub { font-size: 0.8rem; color: var(--text-muted); }
+
+/* ── NAV BG variable for dashboard ── */
+:root { --nav-bg: rgba(8,9,15,0.96); --border: rgba(255,255,255,0.07); }
+
+/* ── MOBILE RESPONSIVE (new elements) ── */
+@media (max-width: 600px) {
+  .top-banner { font-size: 0.75rem; gap: 10px; padding: 8px 14px; }
+  .top-banner-deal { display: none; }
+  .whatsapp-float { bottom: 16px; right: 16px; width: 52px; height: 52px; }
+  .exit-modal { padding: 32px 24px; }
+  .exit-stats { gap: 16px; }
+}
+

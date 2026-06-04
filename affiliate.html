@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Affiliate & Partner Program — Earn with CareerAI India</title>
+  <meta name="description" content="Join CareerAI India's affiliate program. Earn ₹30 per referral. Perfect for college placement cells, career coaches, bloggers, and YouTube creators." />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="style.css"/>
+  <style>
+    .aff-hero        { padding:120px 24px 80px; text-align:center; background:var(--bg); position:relative; overflow:hidden; }
+    .aff-hero::before{ content:''; position:absolute; inset:0; background:radial-gradient(ellipse at 50% 0%, rgba(255,107,53,0.12) 0%, transparent 70%); pointer-events:none; }
+    .aff-badge       { display:inline-block; background:rgba(76,175,80,0.12); border:1px solid rgba(76,175,80,0.3); color:#4caf50; border-radius:100px; padding:8px 20px; font-size:.85rem; font-weight:700; margin-bottom:24px; }
+    .aff-title       { font-size:clamp(2.2rem,5vw,3.8rem); font-weight:900; line-height:1.15; margin-bottom:20px; }
+    .aff-sub         { color:var(--text-muted); font-size:1.1rem; max-width:600px; margin:0 auto 40px; line-height:1.8; }
+    .earn-pill       { display:inline-flex; align-items:center; gap:8px; background:linear-gradient(135deg,rgba(255,107,53,.15),rgba(120,75,160,.15)); border:1px solid rgba(255,107,53,.3); border-radius:100px; padding:10px 24px; font-size:1rem; font-weight:700; margin-bottom:40px; }
+    .earn-pill span  { font-size:1.4rem; font-weight:900; color:#FF6B35; }
+    .aff-section     { max-width:1100px; margin:0 auto; padding:80px 24px; }
+    .aff-section-title { font-size:1.8rem; font-weight:800; margin-bottom:12px; }
+    .aff-section-sub { color:var(--text-muted); font-size:.95rem; margin-bottom:48px; }
+    .how-grid        { display:grid; grid-template-columns:repeat(auto-fit,minmax(250px,1fr)); gap:24px; margin-bottom:80px; }
+    .how-card        { background:var(--card); border:1px solid var(--card-border); border-radius:16px; padding:32px; text-align:center; }
+    .how-num         { width:52px; height:52px; background:var(--grad); border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:1.3rem; font-weight:900; color:#fff; margin:0 auto 20px; }
+    .how-card h3     { font-size:1.1rem; font-weight:700; margin-bottom:8px; }
+    .how-card p      { color:var(--text-muted); font-size:.9rem; line-height:1.7; }
+    .tiers-grid      { display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:24px; margin-bottom:80px; }
+    .tier-card       { background:var(--card); border:1px solid var(--card-border); border-radius:20px; padding:36px; position:relative; }
+    .tier-card.best  { border-color:rgba(255,107,53,.4); background:linear-gradient(135deg,rgba(255,107,53,.08),rgba(120,75,160,.08)); }
+    .tier-badge      { position:absolute; top:-12px; left:50%; transform:translateX(-50%); background:var(--grad); color:#fff; font-size:.75rem; font-weight:800; padding:4px 16px; border-radius:100px; white-space:nowrap; }
+    .tier-type       { font-size:.8rem; font-weight:700; color:var(--text-muted); text-transform:uppercase; letter-spacing:1px; margin-bottom:12px; }
+    .tier-earn       { font-size:2.4rem; font-weight:900; color:#FF6B35; margin-bottom:4px; }
+    .tier-earn-sub   { font-size:.85rem; color:var(--text-muted); margin-bottom:20px; }
+    .tier-desc       { font-size:.9rem; color:var(--text-soft); line-height:1.7; margin-bottom:20px; }
+    .tier-list li    { font-size:.85rem; color:var(--text-soft); padding:6px 0; border-bottom:1px solid rgba(255,255,255,.05); }
+    .tier-list li::before { content:'✅ '; }
+    .faq-aff         { max-width:740px; margin:0 auto 80px; }
+    .signup-box      { background:var(--card); border:1px solid rgba(255,107,53,.3); border-radius:24px; padding:56px 48px; text-align:center; max-width:680px; margin:0 auto 80px; }
+    .signup-box h2   { font-size:2rem; font-weight:800; margin-bottom:12px; }
+    .signup-box p    { color:var(--text-muted); margin-bottom:32px; }
+    .aff-form        { display:grid; gap:16px; text-align:left; }
+    .aff-form .row   { display:grid; grid-template-columns:1fr 1fr; gap:16px; }
+    .aff-submit      { width:100%; background:var(--grad); color:#fff; border:none; border-radius:12px; padding:16px; font-size:1.05rem; font-weight:700; cursor:pointer; margin-top:8px; font-family:var(--font); transition:all .2s; }
+    .aff-submit:hover{ transform:translateY(-2px); box-shadow:0 8px 32px rgba(255,107,53,.4); }
+    .trust-row       { display:flex; justify-content:center; gap:32px; flex-wrap:wrap; margin-top:20px; }
+    .trust-item      { font-size:.8rem; color:var(--text-muted); }
+    .partners-section{ background:var(--bg2); padding:80px 24px; text-align:center; }
+    .partner-types   { display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr)); gap:20px; max-width:900px; margin:48px auto 0; }
+    .partner-type    { background:var(--card); border:1px solid var(--card-border); border-radius:12px; padding:24px; }
+    .partner-icon    { font-size:2.5rem; margin-bottom:12px; }
+    .partner-type h3 { font-size:.95rem; font-weight:700; margin-bottom:6px; }
+    .partner-type p  { font-size:.82rem; color:var(--text-muted); line-height:1.6; }
+    .nav-simple      { padding:20px 32px; display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid rgba(255,255,255,.06); }
+    .nav-logo        { font-size:1.2rem; font-weight:800; color:#fff; text-decoration:none; }
+    .nav-logo span   { color:#FF6B35; }
+  </style>
+</head>
+<body>
+
+<nav class="nav-simple">
+  <a href="index.html" class="nav-logo">CareerAI<span>India</span></a>
+  <a href="index.html" class="btn-ghost" style="text-decoration:none;padding:8px 18px">← Back to App</a>
+</nav>
+
+<!-- HERO -->
+<section class="aff-hero">
+  <div class="aff-badge">💰 Affiliate & Partner Program</div>
+  <h1 class="aff-title">Earn Money by Helping<br/><span class="gradient-text">Indians Get Jobs</span></h1>
+  <p class="aff-sub">Share CareerAI India with your audience. Every time someone subscribes using your link, you earn a commission. No investment. No risk. Just share and earn.</p>
+  <div class="earn-pill">🎁 Earn <span>₹30</span> per subscription · Up to <span>₹5,000+/month</span> possible</div>
+  <a href="#signup" class="btn-hero" style="text-decoration:none">Join Free — Start Earning Today →</a>
+</section>
+
+<!-- HOW IT WORKS -->
+<div class="aff-section">
+  <div style="text-align:center">
+    <div class="aff-section-title">How It Works</div>
+    <p class="aff-section-sub">4 simple steps. No technical knowledge needed.</p>
+  </div>
+  <div class="how-grid">
+    <div class="how-card">
+      <div class="how-num">1</div>
+      <h3>Sign Up Free</h3>
+      <p>Fill the form below. We'll create your unique referral link within 24 hours — no fee, no investment.</p>
+    </div>
+    <div class="how-card">
+      <div class="how-num">2</div>
+      <h3>Share Your Link</h3>
+      <p>Share with students, job seekers, or your social media audience. Works via WhatsApp, Telegram, YouTube, Instagram, email — anywhere.</p>
+    </div>
+    <div class="how-card">
+      <div class="how-num">3</div>
+      <h3>They Subscribe</h3>
+      <p>When someone clicks your link and subscribes to CareerAI Pro (₹99/month or ₹799/year), it's tracked automatically.</p>
+    </div>
+    <div class="how-card">
+      <div class="how-num">4</div>
+      <h3>You Get Paid</h3>
+      <p>We send your earnings directly to your UPI every month. No threshold, no waiting — just money in your account.</p>
+    </div>
+  </div>
+
+  <!-- TIERS -->
+  <div style="text-align:center; margin-bottom:40px;">
+    <div class="aff-section-title">Commission Structure</div>
+    <p class="aff-section-sub">Earn more as you refer more. Fair and transparent.</p>
+  </div>
+  <div class="tiers-grid">
+    <div class="tier-card">
+      <div class="tier-type">Starter</div>
+      <div class="tier-earn">₹20</div>
+      <div class="tier-earn-sub">per monthly subscription</div>
+      <p class="tier-desc">Perfect for anyone starting out. Share in WhatsApp groups, college groups, or your personal network.</p>
+      <ul class="tier-list">
+        <li>1–10 referrals/month</li>
+        <li>₹20 per ₹99 plan</li>
+        <li>₹80 per annual plan</li>
+        <li>UPI payout monthly</li>
+      </ul>
+    </div>
+    <div class="tier-card best">
+      <div class="tier-badge">⚡ Most Common</div>
+      <div class="tier-type">Growth</div>
+      <div class="tier-earn">₹30</div>
+      <div class="tier-earn-sub">per monthly subscription</div>
+      <p class="tier-desc">For active promoters — college placement cells, career coaches, bloggers with a small audience.</p>
+      <ul class="tier-list">
+        <li>11–50 referrals/month</li>
+        <li>₹30 per ₹99 plan</li>
+        <li>₹120 per annual plan</li>
+        <li>Priority WhatsApp support</li>
+        <li>UPI payout monthly</li>
+      </ul>
+    </div>
+    <div class="tier-card">
+      <div class="tier-type">Power Partner</div>
+      <div class="tier-earn">₹50</div>
+      <div class="tier-earn-sub">per monthly subscription</div>
+      <p class="tier-desc">For serious promoters — coaching institutes, YouTube creators (5K+ subscribers), placement consultancies.</p>
+      <ul class="tier-list">
+        <li>51+ referrals/month</li>
+        <li>₹50 per ₹99 plan</li>
+        <li>₹200 per annual plan</li>
+        <li>Co-branded landing page</li>
+        <li>Weekly payout option</li>
+        <li>Dedicated partner support</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- WHO CAN JOIN -->
+</div>
+
+<!-- PARTNER TYPES -->
+<div class="partners-section">
+  <div class="aff-section-title">Who Should Join?</div>
+  <p class="aff-section-sub" style="max-width:580px;margin:.5em auto 0">You don't need a big following. You just need to know job seekers.</p>
+  <div class="partner-types">
+    <div class="partner-type">
+      <div class="partner-icon">🏫</div>
+      <h3>College Placement Cells</h3>
+      <p>Share with your batch. 200 students × ₹30 = ₹6,000/month extra for your committee.</p>
+    </div>
+    <div class="partner-type">
+      <div class="partner-icon">🧑‍🏫</div>
+      <h3>Career Coaches & Mentors</h3>
+      <p>Recommend CareerAI to your mentees. Earn while they improve their resumes.</p>
+    </div>
+    <div class="partner-type">
+      <div class="partner-icon">📺</div>
+      <h3>YouTube Creators</h3>
+      <p>Career, tech, or government jobs content? Your viewers are exactly our target audience.</p>
+    </div>
+    <div class="partner-type">
+      <div class="partner-icon">✍️</div>
+      <h3>Bloggers & Quora Writers</h3>
+      <p>Write about job tips? Add your affiliate link. Earn passively from every visitor.</p>
+    </div>
+    <div class="partner-type">
+      <div class="partner-icon">📱</div>
+      <h3>WhatsApp Group Admins</h3>
+      <p>Running a job alert or SSC/UPSC group? Share your link. Even 20 subscribers = ₹600/month.</p>
+    </div>
+    <div class="partner-type">
+      <div class="partner-icon">🏢</div>
+      <h3>Coaching Institutes</h3>
+      <p>Add CareerAI to your study material. Earn for every student who subscribes.</p>
+    </div>
+  </div>
+</div>
+
+<!-- EARNINGS CALCULATOR -->
+<div class="aff-section" style="padding-top:80px">
+  <div style="text-align:center;margin-bottom:48px">
+    <div class="aff-section-title">💰 Earnings Calculator</div>
+    <p class="aff-section-sub">See how much you can make</p>
+  </div>
+  <div style="background:var(--card);border:1px solid var(--card-border);border-radius:20px;padding:40px;max-width:700px;margin:0 auto 80px">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-bottom:24px">
+      <div>
+        <label class="form-group" style="display:block;margin-bottom:8px;font-size:.85rem;font-weight:600;color:var(--text-soft)">Referrals per month</label>
+        <input type="range" id="ref-slider" min="5" max="200" value="30" oninput="calcEarnings()" style="width:100%;accent-color:#FF6B35;background:transparent;border:none;padding:0"/>
+        <div style="text-align:center;font-size:1.5rem;font-weight:900;color:#FF6B35;margin-top:8px" id="ref-count">30</div>
+      </div>
+      <div>
+        <label class="form-group" style="display:block;margin-bottom:8px;font-size:.85rem;font-weight:600;color:var(--text-soft)">Commission tier</label>
+        <select id="tier-select" onchange="calcEarnings()" style="width:100%">
+          <option value="20">Starter (₹20/referral)</option>
+          <option value="30" selected>Growth (₹30/referral)</option>
+          <option value="50">Power Partner (₹50/referral)</option>
+        </select>
+      </div>
+    </div>
+    <div style="background:rgba(255,107,53,.06);border:1px solid rgba(255,107,53,.2);border-radius:12px;padding:24px;text-align:center">
+      <div style="font-size:.8rem;color:var(--text-muted);margin-bottom:4px">Your estimated monthly earnings</div>
+      <div style="font-size:3rem;font-weight:900;color:#FF6B35" id="earn-result">₹900</div>
+      <div style="font-size:.85rem;color:var(--text-muted);margin-top:4px" id="earn-annual">₹10,800/year</div>
+    </div>
+  </div>
+
+  <!-- SIGNUP FORM -->
+  <div class="signup-box" id="signup">
+    <h2>🚀 Join the Partner Program</h2>
+    <p>Fill this form. We'll WhatsApp you your unique referral link within 24 hours.</p>
+    <div class="aff-form" id="aff-form">
+      <div class="row">
+        <div class="form-group"><label>Your Name</label><input type="text" id="aff-name" placeholder="Rahul Sharma"/></div>
+        <div class="form-group"><label>WhatsApp Number</label><input type="tel" id="aff-phone" placeholder="91XXXXXXXXXX"/></div>
+      </div>
+      <div class="form-group"><label>Email</label><input type="email" id="aff-email" placeholder="rahul@email.com"/></div>
+      <div class="form-group">
+        <label>How will you promote CareerAI?</label>
+        <select id="aff-channel">
+          <option>College Placement Cell / Student Committee</option>
+          <option>WhatsApp Groups (Job alerts / SSC / UPSC)</option>
+          <option>YouTube Channel</option>
+          <option>Blog / Website / Quora</option>
+          <option>Career Coach / Mentor</option>
+          <option>Coaching Institute</option>
+          <option>Instagram / Social Media</option>
+          <option>Other</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Approx. audience size</label>
+        <select id="aff-audience">
+          <option>Less than 100 people</option>
+          <option>100–500 people</option>
+          <option>500–2,000 people</option>
+          <option>2,000–10,000 people</option>
+          <option>10,000+ people</option>
+        </select>
+      </div>
+      <div class="form-group"><label>Your UPI ID (for payouts)</label><input type="text" id="aff-upi" placeholder="yourname@upi"/></div>
+      <button class="aff-submit" onclick="submitAffiliateForm()">Apply Now — Get My Referral Link →</button>
+    </div>
+    <div id="aff-success" style="display:none;text-align:center;padding:24px">
+      <div style="font-size:3rem;margin-bottom:16px">🎉</div>
+      <h3 style="font-size:1.3rem;font-weight:800;margin-bottom:8px">Application Submitted!</h3>
+      <p style="color:var(--text-muted)">We'll WhatsApp your referral link within 24 hours.<br/>Meanwhile, you can share <strong>careerai.in</strong> with your audience!</p>
+    </div>
+    <div class="trust-row">
+      <span class="trust-item">✅ No fees ever</span>
+      <span class="trust-item">✅ UPI payout monthly</span>
+      <span class="trust-item">✅ Real-time tracking</span>
+      <span class="trust-item">✅ Cancel anytime</span>
+    </div>
+  </div>
+
+  <!-- FAQ -->
+  <div class="faq-aff">
+    <div style="text-align:center;margin-bottom:40px">
+      <div class="aff-section-title" style="font-size:1.5rem">Common Questions</div>
+    </div>
+
+    <div style="display:grid;gap:12px">
+      <details style="background:var(--card);border:1px solid var(--card-border);border-radius:12px;padding:20px 24px">
+        <summary style="font-weight:700;cursor:pointer;font-size:.95rem">How do I get my referral link?</summary>
+        <p style="color:var(--text-muted);font-size:.9rem;line-height:1.7;margin-top:12px">After you apply, we review your application and WhatsApp you a unique link like <code>careerai.in/?ref=YOURCODE</code> within 24 hours. Share this link anywhere and every sale is tracked to you.</p>
+      </details>
+      <details style="background:var(--card);border:1px solid var(--card-border);border-radius:12px;padding:20px 24px">
+        <summary style="font-weight:700;cursor:pointer;font-size:.95rem">When do I get paid?</summary>
+        <p style="color:var(--text-muted);font-size:.9rem;line-height:1.7;margin-top:12px">Payouts happen on the 5th of every month directly to your UPI ID. There is no minimum threshold — even 1 referral gets paid.</p>
+      </details>
+      <details style="background:var(--card);border:1px solid var(--card-border);border-radius:12px;padding:20px 24px">
+        <summary style="font-weight:700;cursor:pointer;font-size:.95rem">How are referrals tracked?</summary>
+        <p style="color:var(--text-muted);font-size:.9rem;line-height:1.7;margin-top:12px">Your referral link adds a cookie (30-day duration) to the visitor's browser. If they subscribe within 30 days of clicking your link, you get credit — even if they come back later.</p>
+      </details>
+      <details style="background:var(--card);border:1px solid var(--card-border);border-radius:12px;padding:20px 24px">
+        <summary style="font-weight:700;cursor:pointer;font-size:.95rem">Is there a limit on how much I can earn?</summary>
+        <p style="color:var(--text-muted);font-size:.9rem;line-height:1.7;margin-top:12px">No limit at all. The more people you refer, the more you earn. Some of our top partners are on track to earn ₹5,000–₹15,000/month.</p>
+      </details>
+      <details style="background:var(--card);border:1px solid var(--card-border);border-radius:12px;padding:20px 24px">
+        <summary style="font-weight:700;cursor:pointer;font-size:.95rem">Can I join if I'm a student with no audience?</summary>
+        <p style="color:var(--text-muted);font-size:.9rem;line-height:1.7;margin-top:12px">Yes! Even sharing with 20–30 classmates in a WhatsApp group can get you 5–10 subscribers a month, earning ₹150–₹300 extra. Many of our affiliates started as students.</p>
+      </details>
+    </div>
+  </div>
+
+</div><!-- /aff-section -->
+
+<footer class="footer" style="text-align:center;padding:40px 24px">
+  <a href="index.html" style="font-family:'Baloo 2',sans-serif;font-size:1.2rem;font-weight:800;color:#fff;text-decoration:none">CareerAI<span style="color:#FF6B35">India</span></a>
+  <p style="color:var(--text-muted);font-size:.85rem;margin-top:12px">Questions? WhatsApp us: <a href="https://wa.me/919508574636" style="color:#FF6B35">+91 95085 74636</a></p>
+  <p style="color:var(--text-muted);font-size:.8rem;margin-top:8px">© 2026 CareerAI India · <a href="privacy.html" style="color:var(--text-muted)">Privacy</a> · <a href="terms.html" style="color:var(--text-muted)">Terms</a></p>
+</footer>
+
+<script>
+  function calcEarnings() {
+    const refs = parseInt(document.getElementById('ref-slider').value);
+    const comm = parseInt(document.getElementById('tier-select').value);
+    document.getElementById('ref-count').textContent = refs;
+    const monthly = refs * comm;
+    const annual  = monthly * 12;
+    document.getElementById('earn-result').textContent  = '₹' + monthly.toLocaleString('en-IN');
+    document.getElementById('earn-annual').textContent  = '₹' + annual.toLocaleString('en-IN') + '/year';
+  }
+
+  function submitAffiliateForm() {
+    const name    = document.getElementById('aff-name').value.trim();
+    const phone   = document.getElementById('aff-phone').value.trim();
+    const email   = document.getElementById('aff-email').value.trim();
+    const channel = document.getElementById('aff-channel').value;
+    const audience= document.getElementById('aff-audience').value;
+    const upi     = document.getElementById('aff-upi').value.trim();
+
+    if (!name || !phone || !email) {
+      alert('Please fill in Name, WhatsApp Number, and Email.');
+      return;
+    }
+
+    const msg = [
+      `🤝 *New Affiliate Application — CareerAI India*`,
+      ``,
+      `👤 Name: ${name}`,
+      `📱 WhatsApp: ${phone}`,
+      `📧 Email: ${email}`,
+      `📣 Channel: ${channel}`,
+      `👥 Audience: ${audience}`,
+      `💳 UPI: ${upi || 'Not provided'}`,
+      ``,
+      `Please send referral link within 24 hours. 🙏`,
+    ].join('\n');
+
+    const waUrl = `https://wa.me/919508574636?text=${encodeURIComponent(msg)}`;
+    window.open(waUrl, '_blank');
+
+    document.getElementById('aff-form').style.display = 'none';
+    document.getElementById('aff-success').style.display = 'block';
+  }
+</script>
+</body>
+</html>

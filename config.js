@@ -1,8 +1,7 @@
 /**
  * CareerAI India — Configuration
  * ─────────────────────────────────────────────────────────────
- * STEP 1: Fill in your API keys below.
- * See setup.html in this folder for a visual step-by-step guide.
+ * Fill in your API keys below before going live.
  * ─────────────────────────────────────────────────────────────
  */
 const CONFIG = {
@@ -25,17 +24,25 @@ const CONFIG = {
   },
 
   // ── UPI PAYMENT ───────────────────────────────────────────
-  // Your UPI ID — users will scan your QR or copy this to pay
-  UPI_ID: 'shibuthegenius@ybl',
+  // ★ UPDATE THESE WITH YOUR OWN DETAILS
+  UPI_ID:   'shibuthegenius@ybl',     // ← your UPI ID (e.g. name@upi)
+  UPI_NAME: 'CareerAI India',          // displayed in QR / UPI apps
 
   // ── PLANS ─────────────────────────────────────────────────
   PLANS: {
-    monthly: { amount: 9900,  label: 'Monthly Pro',  desc: '₹99/month' },
-    annual:  { amount: 79900, label: 'Annual Pro',   desc: '₹799/year (save ₹389)' },
+    single:  { amount: 4900,  label: 'Single AI Resume', desc: '₹49 (One-Time)' },
+    monthly: { amount: 9900,  label: 'CareerAI Pro Monthly', desc: '₹99/month'  },
+    annual:  { amount: 79900, label: 'CareerAI Pro Annual',  desc: '₹799/year (save ₹389)' },
   },
 
   // ── APP SETTINGS ──────────────────────────────────────────
-  APP_NAME:    'CareerAI India',
-  SUPPORT_WA:  'https://wa.me/919508574636', // Owner WhatsApp for payment verification
-  FREE_TRIALS: 3,   // number of free AI uses before paywall
+  APP_NAME:     'CareerAI India',
+  SITE_URL:     'https://careerai.in',  // Update with your live domain
+  SUPPORT_WA:   'https://wa.me/919508574636', // Owner WhatsApp
+  SUPPORT_WA_NUMBER: '919508574636',
+  SUPPORT_EMAIL:'support@careerai.in',
+  INSTAGRAM:    'https://instagram.com/careerai.india',
+  LINKEDIN:     'https://linkedin.com/company/careerai-india',
+  TWITTER:      'https://twitter.com/careerai_india',
+  FREE_TRIALS:  3,   // number of free AI uses before paywall
 };

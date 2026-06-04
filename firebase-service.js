@@ -129,11 +129,18 @@ async function checkUsageGate() {
 
   // Non-logged-in demo mode
   const demoCount = parseInt(localStorage.getItem('careerai_uses') || '0');
+  const shared = localStorage.getItem('careerai_shared_wa'); // Viral loop check
+
   if (!currentUser) {
     if (demoCount >= CONFIG.FREE_TRIALS) {
-      showSection('signup');
-      showToast('🔒 Sign up free to get 3 more uses!', 'info');
-      return false;
+      if (!shared) {
+        showViralSharePopup();
+        return false;
+      } else if (demoCount >= CONFIG.FREE_TRIALS + 1) { // They get 1 extra free use
+        showSection('signup');
+        showToast('🔒 Sign up free to get 3 more uses!', 'info');
+        return false;
+      }
     }
     localStorage.setItem('careerai_uses', demoCount + 1);
     return true;
@@ -142,9 +149,14 @@ async function checkUsageGate() {
   // Logged in free user
   const uses = userProfile?.usageCount || 0;
   if (uses >= CONFIG.FREE_TRIALS) {
-    showSection('payment');
-    showToast('⚡ Upgrade to Pro for unlimited access!', 'warning');
-    return false;
+    if (!shared) {
+      showViralSharePopup();
+      return false;
+    } else if (uses >= CONFIG.FREE_TRIALS + 1) {
+      showSection('payment');
+      showToast('⚡ Upgrade to Pro for unlimited access!', 'warning');
+      return false;
+    }
   }
 
   // Increment usage
@@ -236,3 +248,22 @@ function demoSuccess(type) {
   showSection('success');
   return { ok: true };
 }
+
+// ── ANALYTICS (lightweight, Firestore-based) ──────────────────
+async function trackEvent(eventName, data = {}) {
+  if (!db) return; // silently skip if Firebase not configured
+  try {
+    await db.collection('events').add({
+      event:   eventName,
+      uid:     currentUser?.uid  || 'guest',
+      email:   currentUser?.email || 'guest',
+      data,
+      page:    window.location.pathname,
+      ts:      firebase.firestore.FieldValue.serverTimestamp(),
+    });
+  } catch (e) {
+    // Non-critical — do not surface to user
+    console.debug('[Analytics] Track event failed:', e);
+  }
+}
+
