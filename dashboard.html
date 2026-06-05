@@ -81,13 +81,16 @@
 <div class="dash-wrap">
 
   <!-- HEADER -->
-  <div class="dash-header">
+  <div class="dash-header" style="align-items: center;">
     <div>
       <div class="dash-greeting" id="dash-greeting">👋 Welcome back, <span id="dash-name">...</span></div>
       <div style="color:var(--text-muted);font-size:.9rem;margin-top:4px" id="dash-plan-text">Loading your plan...</div>
     </div>
-    <div>
+    <div style="display: flex; align-items: center; gap: 16px;">
       <span class="plan-badge free" id="plan-badge">Free Plan</span>
+      <div id="dash-avatar" style="width:48px;height:48px;border-radius:50%;background:var(--grad);display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:1.2rem;overflow:hidden;border:2px solid rgba(255,107,53,0.3);">
+        <span id="dash-avatar-text">?</span>
+      </div>
     </div>
   </div>
 
@@ -107,6 +110,35 @@
     </div>
     <button class="btn-primary" onclick="window.location='index.html#pricing'" style="padding:12px 28px;font-size:1rem">Get Pro for ₹99/month →</button>
     <div style="font-size:.8rem;color:var(--text-muted);margin-top:10px">🔒 30-day money back guarantee · Cancel anytime</div>
+  </div>
+
+  <!-- PROFILE & SETTINGS -->
+  <div class="section-title" style="margin-top:20px;display:flex;justify-content:space-between;align-items:center;">
+    <span>⚙️ Profile & Settings</span>
+  </div>
+  <div class="profile-settings-card" style="background:var(--card);border:1px solid var(--card-border);border-radius:var(--radius-lg);padding:24px;margin-bottom:32px;">
+    <div style="display:flex;flex-wrap:wrap;gap:40px;">
+      
+      <!-- User Details -->
+      <div style="flex:1;min-width:280px;">
+        <h4 style="font-size:0.9rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:16px;">Account Details</h4>
+        <div style="margin-bottom:12px;"><strong style="color:var(--text-soft);">Full Name:</strong> <span id="prof-name">...</span></div>
+        <div style="margin-bottom:12px;"><strong style="color:var(--text-soft);">Email:</strong> <span id="prof-email">...</span></div>
+        <div style="margin-bottom:12px;"><strong style="color:var(--text-soft);">User ID:</strong> <span id="prof-uid" style="font-family:monospace;font-size:0.85rem;">...</span></div>
+        <button class="btn-ghost" onclick="signOut()" style="border:1px solid rgba(255,255,255,0.1);border-radius:6px;padding:8px 16px;margin-top:12px;color:#ff5f57;">🚪 Sign Out</button>
+      </div>
+
+      <!-- Subscription Details -->
+      <div style="flex:1;min-width:280px;background:rgba(255,107,53,0.05);border:1px solid rgba(255,107,53,0.2);border-radius:12px;padding:20px;">
+        <h4 style="font-size:0.9rem;color:var(--primary);text-transform:uppercase;letter-spacing:1px;margin-bottom:16px;">Active Plan</h4>
+        <div style="font-size:1.4rem;font-weight:800;margin-bottom:4px;" id="prof-plan-name">Free Plan</div>
+        <div style="font-size:0.85rem;color:var(--text-muted);margin-bottom:16px;" id="prof-plan-expiry">Upgrade for full access</div>
+        <div style="display:flex;gap:12px;">
+          <button class="btn-primary" id="prof-upgrade-btn" onclick="window.location='index.html#pricing'" style="padding:8px 16px;font-size:0.85rem;">Upgrade Now</button>
+          <button class="btn-ghost" id="prof-cancel-btn" onclick="showCancelModal()" style="padding:8px 16px;font-size:0.85rem;display:none;">Cancel Plan</button>
+        </div>
+      </div>
+    </div>
   </div>
 
   <!-- STATS -->
@@ -226,6 +258,17 @@
     document.getElementById('dash-name').textContent = firstName;
     document.getElementById('dash-user-name').textContent = user.email;
 
+    // Profile Details
+    document.getElementById('prof-name').textContent = user.displayName || 'No Name Set';
+    document.getElementById('prof-email').textContent = user.email;
+    document.getElementById('prof-uid').textContent = user.uid;
+
+    if (user.photoURL) {
+      document.getElementById('dash-avatar').innerHTML = `<img src="${user.photoURL}" width="100%" height="100%" style="object-fit:cover;" />`;
+    } else {
+      document.getElementById('dash-avatar-text').textContent = (user.displayName?.[0] || user.email?.[0] || '?').toUpperCase();
+    }
+
     // Plan
     const pro = isPro();
     const badge  = document.getElementById('plan-badge');
@@ -239,9 +282,13 @@
       planText.textContent = '🎉 You have full Pro access to all tools!';
 
       const expiry = profile?.planExpiry?.toDate?.();
-      document.getElementById('stat-expiry').textContent = expiry
-        ? `Renews: ${expiry.toLocaleDateString('en-IN', {day:'numeric',month:'long',year:'numeric'})}`
-        : 'Active subscription';
+      const expiryStr = expiry ? expiry.toLocaleDateString('en-IN', {day:'numeric',month:'long',year:'numeric'}) : 'Active subscription';
+      
+      document.getElementById('stat-expiry').textContent = expiry ? `Renews: ${expiryStr}` : 'Active subscription';
+      document.getElementById('prof-plan-name').textContent = '⚡ CareerAI Pro';
+      document.getElementById('prof-plan-expiry').textContent = expiry ? `Access until ${expiryStr}` : 'Full Access';
+      document.getElementById('prof-upgrade-btn').style.display = 'none';
+      document.getElementById('prof-cancel-btn').style.display = 'block';
     } else {
       badge.className = 'plan-badge free';
       badge.textContent = 'Free Plan';
@@ -249,6 +296,11 @@
       document.getElementById('stat-expiry').textContent = '3 free uses per account';
       document.getElementById('upgrade-card').style.display = 'block';
       planText.textContent = `Free plan · ${CONFIG.FREE_TRIALS - (profile?.usageCount || 0)} uses remaining`;
+      
+      document.getElementById('prof-plan-name').textContent = 'Free Plan';
+      document.getElementById('prof-plan-expiry').textContent = `Upgrade to unlock everything`;
+      document.getElementById('prof-upgrade-btn').style.display = 'block';
+      document.getElementById('prof-cancel-btn').style.display = 'none';
     }
 
     // Usage
@@ -344,6 +396,25 @@
     toast.innerHTML = `<span style="font-size:1.1rem">${icons[type]}</span><span>${msg}</span>`;
     document.body.appendChild(toast);
     setTimeout(() => { toast.style.animation = 'slideOutRight 0.3s ease forwards'; setTimeout(() => toast.remove(), 300); }, 4000);
+  }
+
+  // --- Cancel Modal Logic ---
+  function showCancelModal() {
+    let cancelModal = document.getElementById('cancel-plan-modal');
+    if (!cancelModal) {
+      cancelModal = document.createElement('div');
+      cancelModal.id = 'cancel-plan-modal';
+      cancelModal.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.8);backdrop-filter:blur(8px);z-index:9999;display:flex;align-items:center;justify-content:center;padding:24px;';
+      cancelModal.innerHTML = `
+        <div style="background:var(--bg3);border:1px solid rgba(255,255,255,0.1);border-radius:var(--radius-lg);padding:32px;max-width:400px;width:100%;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,0.5);">
+          <div style="font-size:3rem;margin-bottom:16px;">💡</div>
+          <h2 style="font-size:1.4rem;margin-bottom:12px;">Cancel Subscription</h2>
+          <p style="color:var(--text-soft);font-size:0.95rem;line-height:1.6;margin-bottom:24px;text-align:left;">Since your payments are processed manually via UPI, your subscription <strong>does not auto-renew</strong>. <br><br>You do not need to do anything to cancel. You will automatically drop to the Free Plan when your current 30 days are up, and you won't be charged again.</p>
+          <button class="btn-primary" onclick="document.getElementById('cancel-plan-modal').remove()" style="width:100%;padding:12px;border-radius:8px;">Got it, thanks!</button>
+        </div>
+      `;
+      document.body.appendChild(cancelModal);
+    }
   }
 </script>
 </body>

@@ -656,35 +656,41 @@
     <!-- LOGIN -->
     <div class="modal-section" id="modal-login">
       <button class="modal-close" onclick="closeModal()">✕</button>
-      <h2 class="modal-title">Welcome Back 👋</h2>
-      <p class="modal-sub">Login to access your career tools</p>
+      <div style="text-align: center;">
+        <span class="modal-header-icon">👋</span>
+        <h2 class="modal-title">Welcome Back</h2>
+        <p class="modal-sub">Login to access your career tools</p>
+      </div>
       <button class="btn-google" onclick="handleGoogleAuth()">
         <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" width="18" style="vertical-align:middle;margin-right:8px"/>
         Continue with Google
       </button>
-      <div class="divider"><span>or</span></div>
-      <div class="form-group"><label>Email</label><input type="email" id="li-email" placeholder="rahul@email.com"/></div>
-      <div class="form-group"><label>Password</label><input type="password" id="li-pass" placeholder="Your password"/></div>
-      <button class="btn-modal-primary" id="btn-login" onclick="handleLogin()">Login →</button>
-      <p class="modal-switch">No account? <a href="#" onclick="showSection('signup')">Sign up free</a></p>
+      <div class="divider"><span>or email</span></div>
+      <div class="form-group"><label>Email Address</label><input type="email" id="li-email" placeholder="rahul@example.com"/></div>
+      <div class="form-group"><label>Password</label><input type="password" id="li-pass" placeholder="Your secure password"/></div>
+      <button class="btn-modal-primary" id="btn-login" onclick="handleLogin()">Sign In to Dashboard →</button>
+      <p class="modal-switch">Don't have an account? <a href="#" onclick="showSection('signup')">Create one free</a></p>
     </div>
 
     <!-- SIGNUP -->
     <div class="modal-section" id="modal-signup" style="display:none">
       <button class="modal-close" onclick="closeModal()">✕</button>
-      <h2 class="modal-title">Start Free Trial 🚀</h2>
-      <p class="modal-sub">7 days free · No credit card · Cancel anytime</p>
+      <div style="text-align: center;">
+        <span class="modal-header-icon">🚀</span>
+        <h2 class="modal-title">Start Free Trial</h2>
+        <p class="modal-sub">7 days free · No credit card required</p>
+      </div>
       <button class="btn-google" onclick="handleGoogleAuth()">
         <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" width="18" style="vertical-align:middle;margin-right:8px"/>
-        Continue with Google
+        Sign up with Google
       </button>
-      <div class="divider"><span>or</span></div>
+      <div class="divider"><span>or email</span></div>
       <div class="form-group"><label>Full Name</label><input type="text" id="su-name" placeholder="Rahul Sharma"/></div>
-      <div class="form-group"><label>Email</label><input type="email" id="su-email" placeholder="rahul@email.com"/></div>
-      <div class="form-group"><label>Password</label><input type="password" id="su-pass" placeholder="Min 6 characters"/></div>
-      <div class="form-group"><label>Referral Code (optional)</label><input type="text" id="su-referral" placeholder="e.g. CAI-ABC123"/></div>
-      <button class="btn-modal-primary" id="btn-signup" onclick="handleSignup()">Start Free Trial →</button>
-      <p class="modal-switch">Already have an account? <a href="#" onclick="showSection('login')">Login</a></p>
+      <div class="form-group"><label>Email Address</label><input type="email" id="su-email" placeholder="rahul@example.com"/></div>
+      <div class="form-group"><label>Create Password</label><input type="password" id="su-pass" placeholder="Minimum 6 characters"/></div>
+      <div class="form-group"><label>Referral Code (Optional)</label><input type="text" id="su-referral" placeholder="e.g. CAI-ABC123"/></div>
+      <button class="btn-modal-primary" id="btn-signup" onclick="handleSignup()">Create Free Account →</button>
+      <p class="modal-switch">Already have an account? <a href="#" onclick="showSection('login')">Sign In</a></p>
     </div>
 
     <!-- PAYMENT -->
