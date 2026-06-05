@@ -878,6 +878,7 @@
 
   // Animate the hero stats when page loads
   window.addEventListener('DOMContentLoaded', () => {
+    initFirebase();
     setTimeout(() => {
       const statNums = document.querySelectorAll('.stat-num');
       statNums.forEach(el => {
