@@ -45,6 +45,9 @@ TEMPLATE = """<!DOCTYPE html>
   <meta property="og:title" content="{h1}" />
   <meta property="og:description" content="Real questions + AI practice for {company} HR and Technical rounds." />
   <meta property="og:type" content="article" />
+  <!-- Vercel Speed Insights -->
+  <script>window.va = window.va || function () {{ (window.vaq = window.vaq || []).push(arguments); }};</script>
+  <script defer src="/_vercel/insights/script.js"></script>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Baloo+2:wght@600;700;800&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="style.css" />
   <style>
