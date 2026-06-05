@@ -65,6 +65,8 @@ async function signUpWithEmail(name, email, password, referralCode) {
   try {
     const cred = await auth.createUserWithEmailAndPassword(email, password);
     await cred.user.updateProfile({ displayName: name });
+    // Ensure profile is created with the updated displayName
+    userProfile = await fetchOrCreateProfile({ ...cred.user, displayName: name });
     if (referralCode) await applyReferral(cred.user.uid, referralCode);
     return { ok: true };
   } catch (e) {
@@ -75,7 +77,8 @@ async function signUpWithEmail(name, email, password, referralCode) {
 async function signInWithEmail(email, password) {
   if (!auth) return demoSuccess('login');
   try {
-    await auth.signInWithEmailAndPassword(email, password);
+    const cred = await auth.signInWithEmailAndPassword(email, password);
+    userProfile = await fetchOrCreateProfile(cred.user);
     return { ok: true };
   } catch (e) {
     return { ok: false, error: friendlyError(e.code) };
@@ -85,7 +88,8 @@ async function signInWithEmail(email, password) {
 async function signInWithGoogle() {
   if (!auth) return demoSuccess('login');
   try {
-    await auth.signInWithPopup(googleProvider);
+    const cred = await auth.signInWithPopup(googleProvider);
+    userProfile = await fetchOrCreateProfile(cred.user);
     return { ok: true };
   } catch (e) {
     return { ok: false, error: friendlyError(e.code) };
