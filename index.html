@@ -885,67 +885,6 @@
       });
     }, 800);
   });
-  // --- FOMO LIVE SALES NOTIFICATIONS ---
-  const fomoNames = ['Rahul', 'Priya', 'Amit', 'Neha', 'Vikram', 'Sneha', 'Rajat', 'Pooja', 'Siddharth', 'Anjali', 'Karan', 'Shruti'];
-  const fomoCities = ['Delhi', 'Mumbai', 'Bangalore', 'Pune', 'Hyderabad', 'Chennai', 'Noida', 'Gurgaon', 'Kolkata', 'Ahmedabad'];
-  const fomoActions = ['upgraded to Pro (₹99/mo)', 'subscribed to Pro', 'unlocked Unlimited AI', 'purchased the Pro Plan'];
-
-  function createFomoPopup() {
-    const popup = document.createElement('div');
-    popup.id = 'fomo-popup';
-    popup.style.cssText = `
-      position: fixed; bottom: 24px; left: 24px; background: #13151f; border: 1px solid rgba(255,255,255,0.08);
-      border-left: 4px solid #25D366; border-radius: 12px; padding: 14px 20px; display: flex; align-items: center; gap: 14px;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.5); z-index: 999; transform: translateY(150px); opacity: 0;
-      transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275); max-width: 340px; pointer-events: none;
-    `;
-    
-    // Mobile responsive positioning
-    if (window.innerWidth <= 600) {
-      popup.style.bottom = '100px';
-      popup.style.left = '16px';
-      popup.style.right = '16px';
-      popup.style.maxWidth = 'none';
-    }
-
-    popup.innerHTML = `
-      <div style="width:36px;height:36px;background:rgba(37,211,102,0.1);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.1rem">⚡</div>
-      <div style="flex:1">
-        <div style="font-size:0.85rem;font-weight:700;color:#fff;margin-bottom:2px" id="fomo-title">Someone upgraded</div>
-        <div style="font-size:0.75rem;color:#8892a4" id="fomo-time">Just now</div>
-      </div>
-    `;
-    document.body.appendChild(popup);
-    return popup;
-  }
-
-  function triggerFomo() {
-    const popup = document.getElementById('fomo-popup') || createFomoPopup();
-    
-    const name = fomoNames[Math.floor(Math.random() * fomoNames.length)];
-    const city = fomoCities[Math.floor(Math.random() * fomoCities.length)];
-    const action = fomoActions[Math.floor(Math.random() * fomoActions.length)];
-    const time = Math.floor(Math.random() * 12) + 1; // 1 to 12 mins ago
-    
-    document.getElementById('fomo-title').innerHTML = `<strong>${name}</strong> from ${city} ${action}`;
-    document.getElementById('fomo-time').textContent = `${time} min${time > 1 ? 's' : ''} ago`;
-    
-    // Show
-    popup.style.transform = 'translateY(0)';
-    popup.style.opacity = '1';
-    
-    // Hide after 5 seconds
-    setTimeout(() => {
-      popup.style.transform = 'translateY(150px)';
-      popup.style.opacity = '0';
-    }, 5000);
-  }
-
-  // Start FOMO loop after 3 seconds, then every 15-25 seconds
-  setTimeout(() => {
-    triggerFomo();
-    setInterval(triggerFomo, 20000 + Math.random() * 10000);
-  }, 3000);
 
 </script>
 </body>
