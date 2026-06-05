@@ -18,6 +18,7 @@ function initFirebase() {
     db   = firebase.firestore();
     auth = firebase.auth();
     googleProvider = new firebase.auth.GoogleAuthProvider();
+    googleProvider.setCustomParameters({ prompt: 'select_account' }); // Forces account selector
     listenAuthState();
   } catch (e) {
     console.error('[Firebase] Init error:', e);
