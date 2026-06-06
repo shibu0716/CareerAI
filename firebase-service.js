@@ -21,12 +21,19 @@ function initFirebase() {
     return;
   }
   try {
-    firebase.initializeApp(CONFIG.FIREBASE);
+    if (!firebase.apps.length) {
+      firebase.initializeApp(CONFIG.FIREBASE);
+    }
     db   = firebase.firestore();
     auth = firebase.auth();
     googleProvider = new firebase.auth.GoogleAuthProvider();
     googleProvider.setCustomParameters({ prompt: 'select_account' }); // Forces account selector
-    listenAuthState();
+    
+    // Only listen to auth state if we haven't already resolved the promise
+    // To prevent multiple listeners from being attached
+    if (!currentUser && userProfile === null) {
+      listenAuthState();
+    }
   } catch (e) {
     console.error('[Firebase] Init error:', e);
     _authResolve({ user: null, profile: null, error: e });
