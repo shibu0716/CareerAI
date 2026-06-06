@@ -15,11 +15,19 @@ async function openUpiPayment(planKey) {
 
   const amountRupees = plan.amount / 100;
 
+  // Reset Order Bump
+  window._orderBumpActive = false;
+  const bumpCheckbox = document.getElementById('order-bump-checkbox');
+  if (bumpCheckbox) bumpCheckbox.checked = false;
+
   // Update summary labels
   const planLabelEl = document.getElementById('pay-plan-label');
   const totalEl     = document.getElementById('pay-total-amount');
   if (planLabelEl) planLabelEl.textContent = plan.label;
   if (totalEl)     totalEl.textContent     = `₹${amountRupees}`;
+  
+  // Save base amount for order bump toggling
+  window._baseAmountRupees = amountRupees;
 
   // Build UPI deep-link and QR
   const upiLink = `upi://pay?pa=${UPI_ID}&pn=${encodeURIComponent(UPI_NAME)}&am=${amountRupees}&cu=INR&tn=${encodeURIComponent('CareerAI ' + plan.label)}`;
@@ -51,6 +59,36 @@ async function openUpiPayment(planKey) {
   if (verifyBtn) { verifyBtn.textContent = '📲 Submit & Open WhatsApp →'; verifyBtn.disabled = false; }
 
   showSection('payment');
+}
+
+// ── ORDER BUMP (Upsell) ───────────────────────────────────────
+function toggleOrderBump() {
+  const checkbox = document.getElementById('order-bump-checkbox');
+  if (!checkbox) return;
+  
+  // If clicked directly on the div, toggle the checkbox. If clicked on checkbox, it toggles itself natively.
+  // We handle both gracefully:
+  if (event.target !== checkbox) checkbox.checked = !checkbox.checked;
+  
+  window._orderBumpActive = checkbox.checked;
+  const bumpAmount = 499;
+  const finalAmount = window._baseAmountRupees + (window._orderBumpActive ? bumpAmount : 0);
+  
+  // Update UI
+  const totalEl = document.getElementById('pay-total-amount');
+  const amountEl = document.getElementById('upi-amount-display');
+  if (totalEl) totalEl.textContent = `₹${finalAmount}`;
+  if (amountEl) amountEl.textContent = `₹${finalAmount}`;
+  
+  // Re-generate QR Code
+  const plan = CONFIG.PLANS[window._pendingPlanKey];
+  const planLabel = plan ? plan.label : 'Pro';
+  const finalLabel = planLabel + (window._orderBumpActive ? ' + Expert Review' : '');
+  
+  const upiLink = `upi://pay?pa=${UPI_ID}&pn=${encodeURIComponent(UPI_NAME)}&am=${finalAmount}&cu=INR&tn=${encodeURIComponent('CareerAI ' + finalLabel)}`;
+  const qrUrl   = `https://api.qrserver.com/v1/create-qr-code/?size=220x220&color=FF6B35&bgcolor=0f1018&data=${encodeURIComponent(upiLink)}`;
+  const qrImg = document.getElementById('upi-qr-img');
+  if (qrImg) qrImg.src = qrUrl;
 }
 
 // ── COPY UPI ID ───────────────────────────────────────────────
@@ -85,8 +123,10 @@ async function verifyUpiPayment() {
   }
 
   const plan         = CONFIG.PLANS[planKey];
-  const amountRupees = plan ? plan.amount / 100 : '?';
-  const planLabel    = plan ? plan.label : planKey;
+  const baseRupees   = plan ? plan.amount / 100 : 0;
+  const bumpAmount   = 499;
+  const amountRupees = baseRupees + (window._orderBumpActive ? bumpAmount : 0);
+  const planLabel    = (plan ? plan.label : planKey) + (window._orderBumpActive ? ' + Expert Review' : '');
 
   const btn = document.getElementById('btn-verify-upi');
   if (btn) { btn.textContent = '⏳ Saving & opening WhatsApp...'; btn.disabled = true; }

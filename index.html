@@ -477,19 +477,31 @@
     <p class="section-sub">Just ₹99/month — cancel anytime. No hidden charges.</p>
     <div class="pricing-grid">
       <div class="price-card">
-        <div class="price-name">Single Use</div>
-        <div class="price-amount">₹49</div>
+        <div class="price-name">24-Hour Pass</div>
+        <div class="price-amount">₹19</div>
+        <div class="price-period">per day</div>
+        <ul class="price-features">
+          <li>✅ Full 24 hours access</li>
+          <li>✅ 10 AI Resumes limit</li>
+          <li>✅ 5 Interview Mocks limit</li>
+          <li>❌ No WhatsApp Support</li>
+          <li>❌ No Saved Resumes</li>
+        </ul>
+        <button class="btn-price-outline" onclick="selectPlan('daily')">Get Daily Pass</button>
+      </div>
+      <div class="price-card">
+        <div class="price-name">Lifetime Pro</div>
+        <div class="price-amount">₹2,999</div>
         <div class="price-period">one-time payment</div>
         <ul class="price-features">
-          <li>✅ 1 AI Resume Download</li>
-          <li>✅ PDF Export</li>
-          <li>✅ ATS Score Check</li>
-          <li>❌ Unlimited Resumes</li>
-          <li>❌ Interview Coach</li>
-          <li>❌ Cover Letters</li>
-          <li>❌ LinkedIn Optimizer</li>
+          <li>✅ Lifetime Access to all tools</li>
+          <li>✅ Unlimited AI Resumes forever</li>
+          <li>✅ Unlimited Interview Prep</li>
+          <li>✅ Priority WhatsApp Support</li>
+          <li>✅ Free access to all future updates</li>
+          <li>❌ No recurring fees, ever.</li>
         </ul>
-        <button class="btn-price-outline" onclick="selectPlan('single')">Buy Single Resume</button>
+        <button class="btn-price-outline" onclick="selectPlan('lifetime')">Get Lifetime Deal</button>
       </div>
       <div class="price-card featured-price">
         <div class="price-popular">⚡ Most Popular</div>
@@ -633,15 +645,15 @@
   <div class="exit-modal">
     <button class="exit-close" onclick="closeExitPopup()">×</button>
     <div class="exit-emoji">🚀</div>
-    <h2 class="exit-title">Wait! Don't Miss This —</h2>
-    <p class="exit-sub">Get your <strong>FREE AI Resume</strong> before you go.<br/>No credit card. No commitment. Takes 60 seconds.</p>
+    <h2 class="exit-title">Wait! Take 50% OFF your first month 🎁</h2>
+    <p class="exit-sub">Don't leave empty handed. Get Pro for just <strong>₹49</strong> today. Valid for 10 minutes only!</p>
     <div class="exit-stats">
       <div class="exit-stat"><span class="exit-stat-num">10,000+</span><span>Indians hired</span></div>
       <div class="exit-stat"><span class="exit-stat-num">4.9★</span><span>rating</span></div>
-      <div class="exit-stat"><span class="exit-stat-num">₹99</span><span>per month</span></div>
+      <div class="exit-stat"><span class="exit-stat-num">₹49</span><span>special offer</span></div>
     </div>
-    <button class="btn-exit-cta" onclick="closeExitPopup();showSection('signup')">Yes, Build My Free Resume →</button>
-    <button class="btn-exit-skip" onclick="closeExitPopup()">No thanks, I'll figure it out myself</button>
+    <button class="btn-exit-cta" onclick="closeExitPopup();selectPlan('monthly-discount')">Claim ₹49 Offer Now →</button>
+    <button class="btn-exit-skip" onclick="closeExitPopup()">No thanks, I'll pay full price later</button>
   </div>
 </div>
 
@@ -763,6 +775,17 @@
         <div class="pay-item">
           <span id="pay-plan-label">CareerAI Pro Monthly</span>
           <span><strong id="pay-total-amount">₹99</strong></span>
+        </div>
+      </div>
+      
+      <!-- Order Bump (Upsell) -->
+      <div class="order-bump" style="background: rgba(76, 175, 80, 0.1); border: 2px dashed #4caf50; border-radius: 8px; padding: 12px; margin-top: 16px; cursor: pointer;" onclick="toggleOrderBump()">
+        <div style="display: flex; gap: 12px; align-items: flex-start;">
+          <input type="checkbox" id="order-bump-checkbox" style="margin-top: 4px; width: 18px; height: 18px; accent-color: #4caf50;" onclick="event.stopPropagation(); toggleOrderBump();">
+          <div>
+            <div style="font-weight: 700; color: #4caf50; font-size: 0.95rem;">✅ Add Expert Resume Review (₹499)</div>
+            <div style="font-size: 0.8rem; color: var(--text-muted); margin-top: 4px;">Get a senior FAANG engineer to manually review and rewrite your resume. Normally ₹1,999.</div>
+          </div>
         </div>
       </div>
 

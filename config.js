@@ -30,9 +30,12 @@ const CONFIG = {
 
   // ── PLANS ─────────────────────────────────────────────────
   PLANS: {
-    single:  { amount: 4900,  label: 'Single AI Resume', desc: '₹49 (One-Time)' },
-    monthly: { amount: 9900,  label: 'CareerAI Pro Monthly', desc: '₹99/month'  },
-    annual:  { amount: 79900, label: 'CareerAI Pro Annual',  desc: '₹799/year (save ₹389)' },
+    single:  { amount: 4900,   label: 'Single AI Resume', desc: '₹49 (One-Time)' },
+    daily:   { amount: 1900,   label: 'CareerAI 24-Hour Pass', desc: '₹19/day' },
+    monthly: { amount: 9900,   label: 'CareerAI Pro Monthly', desc: '₹99/month'  },
+    'monthly-discount': { amount: 4900, label: 'CareerAI Pro Monthly (50% OFF)', desc: '₹49/month' },
+    annual:  { amount: 79900,  label: 'CareerAI Pro Annual',  desc: '₹799/year (save ₹389)' },
+    lifetime:{ amount: 299900, label: 'CareerAI Lifetime Pro', desc: '₹2,999 (Lifetime)' },
   },
 
   // ── APP SETTINGS ──────────────────────────────────────────

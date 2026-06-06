@@ -208,7 +208,17 @@ async function updateDisplayName(newName) {
 async function activateSubscription(uid, plan, paymentId) {
   if (!db) return;
   const expiry = new Date();
-  expiry.setMonth(expiry.getMonth() + (plan === 'annual' ? 12 : 1));
+  
+  if (plan === 'lifetime') {
+    expiry.setFullYear(expiry.getFullYear() + 100);
+  } else if (plan === 'annual') {
+    expiry.setFullYear(expiry.getFullYear() + 1);
+  } else if (plan === 'daily') {
+    expiry.setDate(expiry.getDate() + 1);
+  } else {
+    // monthly or monthly-discount
+    expiry.setMonth(expiry.getMonth() + 1);
+  }
 
   await db.collection('users').doc(uid).update({
     plan,

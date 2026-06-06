@@ -311,19 +311,33 @@
       <div class="qt-label">LinkedIn Optimizer</div>
     </a>
     <a href="index.html#tools" class="quick-tool" onclick="sessionStorage.setItem('open-tool','exam')">
-      <div class="qt-icon">🎓</div>
-      <div class="qt-label">Exam Prep</div>
+      <div class="qt-icon">📚</div>
+      <div class="qt-label">Exam MCQs</div>
     </a>
   </div>
 
-  <!-- REFERRAL CARD -->
-  <div class="referral-card">
-    <div class="ref-card-title">🎁 Refer a Friend — Earn 1 Free Month</div>
-    <div class="ref-card-sub">Share your unique code. When they subscribe, you both get 1 month FREE added to your account.</div>
-    <div style="display:flex;align-items:center;flex-wrap:wrap;gap:12px">
-      <span class="ref-code-big" id="ref-code-big">CAI-????</span>
-      <button class="btn-primary" onclick="copyRefCode()" style="padding:10px 20px">📋 Copy Code</button>
-      <button class="btn-ghost" onclick="shareRefWhatsApp()" style="padding:10px 20px;border-radius:10px">📱 Share on WhatsApp</button>
+  <!-- AFFILIATE HUB -->
+  <div class="section-title" style="margin-top:32px;">💰 Affiliate Hub (Earn 30%)</div>
+  <div class="profile-card" style="background: rgba(255,107,53,0.05); border: 1px solid rgba(255,107,53,0.2);">
+    <div style="display:flex; flex-wrap:wrap; gap: 24px; align-items:center;">
+      <div style="flex:1; min-width: 250px;">
+        <h3 style="color:#FF6B35; font-size:1.2rem; margin-bottom:8px;">Refer Friends, Earn Cash!</h3>
+        <p style="color:var(--text-muted); font-size:0.9rem; line-height:1.5;">Share your unique link. When someone buys a Pro plan, you get <strong>30% commission straight to your UPI</strong>.</p>
+        
+        <div style="margin-top:16px;">
+          <div style="font-size:0.75rem; text-transform:uppercase; letter-spacing:1px; color:#888; margin-bottom:6px;">Your Unique Link</div>
+          <div style="display:flex; gap:8px;">
+            <input type="text" id="affiliate-link" readonly value="Loading..." style="flex:1; background:var(--bg); border:1px solid rgba(255,255,255,0.1); border-radius:6px; padding:10px; color:#fff; font-family:monospace; font-size:0.9rem;" />
+            <button class="btn-primary" onclick="copyAffiliateLink()" style="padding:10px 20px;">📋 Copy</button>
+          </div>
+        </div>
+      </div>
+      
+      <div style="flex:0 0 160px; background:rgba(0,0,0,0.2); border-radius:12px; padding:20px; text-align:center;">
+        <div style="font-size:0.8rem; color:#888; margin-bottom:4px;">Total Earned</div>
+        <div style="font-size:1.8rem; font-weight:900; color:#4caf50;" id="affiliate-earnings">₹0</div>
+        <div style="font-size:0.75rem; color:#666; margin-top:8px;" id="affiliate-clicks">0 Clicks · 0 Signups</div>
+      </div>
     </div>
   </div>
 
@@ -395,6 +409,14 @@
     document.getElementById('prof-name').textContent = user.displayName || user.email?.split('@')[0] || 'No Name Set';
     document.getElementById('prof-email').textContent = user.email;
     document.getElementById('prof-uid').textContent = 'ID: ' + user.uid.substring(0, 12) + '...';
+    const aLink = document.getElementById('affiliate-link');
+    if (aLink) aLink.value = `${CONFIG.SITE_URL}?ref=${userProfile.referralCode || currentUser.uid}`;
+    
+    // Also update affiliate earnings if we have them (mocking here, would come from DB)
+    const earnings = document.getElementById('affiliate-earnings');
+    if (earnings && userProfile.affiliateEarnings) {
+      earnings.textContent = `₹${userProfile.affiliateEarnings}`;
+    }
 
     // Profile Avatar
     if (user.photoURL) {
@@ -576,6 +598,14 @@
   }
 
   // ── Other Actions ──────────────────────────────────────────
+  function copyAffiliateLink() {
+    const linkInput = document.getElementById('affiliate-link');
+    if (!linkInput) return;
+    navigator.clipboard.writeText(linkInput.value).then(() => {
+      showToast('✅ Affiliate link copied! Share to earn 30%.', 'success');
+    });
+  }
+
   function copyRefCode() {
     const code = document.getElementById('ref-code-big').textContent;
     navigator.clipboard.writeText(code).then(() => {
