@@ -59,6 +59,29 @@ async function openUpiPayment(planKey) {
   if (verifyBtn) { verifyBtn.textContent = '📲 Submit & Open WhatsApp →'; verifyBtn.disabled = false; }
 
   showSection('payment');
+  
+  // Track Lead Intent (Abandoned Cart Tracking)
+  trackLeadIntent(planKey, amountRupees);
+}
+
+// ── LEAD TRACKING (Abandoned Carts) ───────────────────────────
+async function trackLeadIntent(planKey, amount) {
+  if (!db || !currentUser) return;
+  try {
+    const leadRef = db.collection('leads').doc(currentUser.uid);
+    await leadRef.set({
+      uid: currentUser.uid,
+      email: currentUser.email || 'guest',
+      name: currentUser.displayName || 'No Name',
+      phone: currentUser.phoneNumber || '',
+      lastPlanIntent: planKey,
+      lastAmountIntent: amount,
+      status: 'abandoned_cart', // Will be overwritten if they submit UTR
+      lastActivityAt: firebase.firestore.FieldValue.serverTimestamp()
+    }, { merge: true });
+  } catch (e) {
+    console.warn('[Tracking] Lead intent not saved', e);
+  }
 }
 
 // ── ORDER BUMP (Upsell) ───────────────────────────────────────
@@ -190,6 +213,14 @@ async function savePendingPayment(planKey, txnId, amount) {
   try {
     // Save to top-level "payments" collection so you can review in Firebase console
     await db.collection('payments').add(record);
+    
+    // Update Lead status so we know they didn't abandon cart
+    if (currentUser) {
+      await db.collection('leads').doc(currentUser.uid).update({
+        status: 'submitted_utr',
+        lastActivityAt: firebase.firestore.FieldValue.serverTimestamp()
+      });
+    }
   } catch (e) {
     console.warn('[UPI] Could not save payment record:', e);
   }
