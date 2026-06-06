@@ -132,6 +132,30 @@ document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal()
 // ════════════════════════════════════════════════════════════
 //  AUTH MODAL HANDLERS
 // ════════════════════════════════════════════════════════════
+
+// ── AUTH LOADING OVERLAY ─────────────────────────────────────
+function showAuthLoading(message = 'Signing you in...') {
+  let overlay = document.getElementById('auth-loading-overlay');
+  if (!overlay) {
+    overlay = document.createElement('div');
+    overlay.id = 'auth-loading-overlay';
+    overlay.className = 'auth-loading-overlay';
+    document.body.appendChild(overlay);
+  }
+  overlay.innerHTML = `
+    <div class="auth-loading-card">
+      <div class="auth-loading-spinner"></div>
+      <div class="auth-loading-text">${message}</div>
+      <div class="auth-loading-sub">Please wait a moment...</div>
+    </div>`;
+  overlay.classList.add('active');
+}
+
+function hideAuthLoading() {
+  const overlay = document.getElementById('auth-loading-overlay');
+  if (overlay) overlay.classList.remove('active');
+}
+
 async function handleSignup() {
   const name     = document.getElementById('su-name')?.value.trim();
   const email    = document.getElementById('su-email')?.value.trim();
@@ -140,15 +164,23 @@ async function handleSignup() {
   const btn      = document.getElementById('btn-signup');
 
   if (!name || !email || !password) { showToast('Please fill in all fields', 'warning'); return; }
+  if (password.length < 6) { showToast('Password must be at least 6 characters', 'warning'); return; }
 
-  btn.disabled = true; btn.textContent = 'Creating account...';
+  btn.disabled = true;
+  btn.innerHTML = '<span class="btn-spinner"></span> Creating account...';
+  showAuthLoading('Creating your account...');
+
   const res = await signUpWithEmail(name, email, password, referral);
   if (res.ok) {
-    showSection('success');
+    hideAuthLoading();
+    closeModal();
     showToast('🎉 Welcome to CareerAI India!', 'success');
+    window.location = 'dashboard.html';
   } else {
+    hideAuthLoading();
     showToast(res.error, 'error');
-    btn.disabled = false; btn.textContent = 'Start Free Trial →';
+    btn.disabled = false;
+    btn.innerHTML = 'Create Free Account →';
   }
 }
 
@@ -159,27 +191,103 @@ async function handleLogin() {
 
   if (!email || !password) { showToast('Please enter email and password', 'warning'); return; }
 
-  btn.disabled = true; btn.textContent = 'Logging in...';
+  btn.disabled = true;
+  btn.innerHTML = '<span class="btn-spinner"></span> Signing in...';
+  showAuthLoading('Signing you in...');
+
   const res = await signInWithEmail(email, password);
   if (res.ok) {
+    hideAuthLoading();
     closeModal();
     showToast('✅ Welcome back!', 'success');
-    setTimeout(() => window.location = 'dashboard.html', 800);
+    window.location = 'dashboard.html';
   } else {
+    hideAuthLoading();
     showToast(res.error, 'error');
-    btn.disabled = false; btn.textContent = 'Login →';
+    btn.disabled = false;
+    btn.innerHTML = 'Sign In to Dashboard →';
   }
 }
 
 async function handleGoogleAuth() {
+  showAuthLoading('Connecting to Google...');
   const res = await signInWithGoogle();
   if (res.ok) {
+    showAuthLoading('Loading your profile...');
+    // Wait a beat for userProfile to be fully set
+    await new Promise(r => setTimeout(r, 300));
+    hideAuthLoading();
     closeModal();
     showToast('✅ Signed in with Google!', 'success');
-    setTimeout(() => window.location = 'dashboard.html', 800);
+    window.location = 'dashboard.html';
+  } else {
+    hideAuthLoading();
+    showToast(res.error, 'error');
+  }
+}
+
+// ── FORGOT PASSWORD ──────────────────────────────────────────
+async function handleForgotPassword() {
+  const email = document.getElementById('li-email')?.value.trim();
+  if (!email) {
+    showToast('Please enter your email address first', 'warning');
+    document.getElementById('li-email')?.focus();
+    return;
+  }
+  const btn = document.getElementById('btn-forgot-password');
+  if (btn) { btn.disabled = true; btn.textContent = 'Sending...'; }
+
+  const res = await sendPasswordReset(email);
+  if (res.ok) {
+    showToast('📧 Password reset email sent! Check your inbox.', 'success');
   } else {
     showToast(res.error, 'error');
   }
+  if (btn) { btn.disabled = false; btn.textContent = 'Forgot Password?'; }
+}
+
+// ── PASSWORD TOGGLE ──────────────────────────────────────────
+function togglePasswordVisibility(inputId, toggleBtn) {
+  const input = document.getElementById(inputId);
+  if (!input) return;
+  const isPassword = input.type === 'password';
+  input.type = isPassword ? 'text' : 'password';
+  toggleBtn.innerHTML = isPassword ? '🙈' : '👁️';
+  toggleBtn.title = isPassword ? 'Hide password' : 'Show password';
+}
+
+// ── PASSWORD STRENGTH ────────────────────────────────────────
+function checkPasswordStrength(password) {
+  let score = 0;
+  if (password.length >= 6) score++;
+  if (password.length >= 8) score++;
+  if (/[A-Z]/.test(password)) score++;
+  if (/[0-9]/.test(password)) score++;
+  if (/[^A-Za-z0-9]/.test(password)) score++;
+
+  const levels = ['Very Weak', 'Weak', 'Fair', 'Good', 'Strong'];
+  const colors = ['#f44336', '#ff9800', '#ffc107', '#8bc34a', '#4caf50'];
+  const pct = Math.min(100, (score / 5) * 100);
+  return { score, level: levels[Math.min(score, 4)], color: colors[Math.min(score, 4)], pct };
+}
+
+function updatePasswordStrength() {
+  const pw = document.getElementById('su-pass')?.value || '';
+  const meter = document.getElementById('password-strength-meter');
+  const label = document.getElementById('password-strength-label');
+  if (!meter || !label) return;
+
+  if (!pw) {
+    meter.style.width = '0%';
+    label.textContent = '';
+    return;
+  }
+
+  const s = checkPasswordStrength(pw);
+  meter.style.width = s.pct + '%';
+  meter.style.background = s.color;
+  label.textContent = s.level;
+  label.style.color = s.color;
 }
 
 // ════════════════════════════════════════════════════════════
