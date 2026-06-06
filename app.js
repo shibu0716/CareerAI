@@ -15,6 +15,13 @@ document.addEventListener('DOMContentLoaded', () => {
   checkPendingActivation();
   setupExitIntent();
   startCountdownTimer();
+
+  // Capture Affiliate Referral Code
+  const urlParams = new URLSearchParams(window.location.search);
+  const refCode = urlParams.get('ref');
+  if (refCode) {
+    localStorage.setItem('careerai_referral', refCode);
+  }
 });
 
 // ── NAVBAR ───────────────────────────────────────────────────
